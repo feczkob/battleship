@@ -2,8 +2,8 @@
 Project for the Integration of Information Systems course
 
 To run the app: 
-  1. ```docker-compose up``` in the \battleship\src\main\resources\docker folder.
-  2. ```mvn spring-boot:run``` in the battleship folder.
+  1. ```docker-compose up``` in the ```\battleship\src\main\resources\docker``` folder.
+  2. ```mvn spring-boot:run``` in the ```battleship``` folder.
 
 [Docker for Windows](https://docs.docker.com/desktop/windows/install/)
 
