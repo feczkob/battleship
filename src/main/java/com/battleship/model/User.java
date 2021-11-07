@@ -3,7 +3,10 @@ package com.battleship.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
@@ -14,7 +17,11 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
+
+    @NotNull
+    @NotBlank(message = "Name is mandatory")
     private String name;
+
     private int gamesPlayedVsAi = 0;
     private int gamesPlayedVsUser = 0;
     private int gamesWonVsAi = 0;
