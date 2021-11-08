@@ -15,7 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class BattleshipController {
-    //private UserRepositoryInMemory userRepositoryInMemory = new UserRepositoryInMemory();
     @Autowired
     private BattleshipService battleshipService;
 
