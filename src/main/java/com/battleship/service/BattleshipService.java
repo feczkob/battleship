@@ -1,5 +1,6 @@
 package com.battleship.service;
 
+import com.battleship.model.Room;
 import com.battleship.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,9 @@ import java.util.Optional;
 public class BattleshipService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoomRepository roomRepository;
 
     public User findById(Long Id){
         if(userRepository.findById(Id).isPresent())
@@ -34,5 +38,26 @@ public class BattleshipService {
             return userTmp.get();
         }
         throw new RuntimeException("user.not.found");
+    }
+
+    public Room createRoom(Long userId){
+        Optional<User> userTmp = userRepository.findById(userId);
+        if (userTmp.isPresent()){
+            Room room = new Room(userTmp.get().getId());
+            roomRepository.save(room);
+            return room;
+        }
+        else throw new RuntimeException("no.such.user");
+    }
+
+    public void play(String opponent, Long roomId, Long userId){
+
+        switch (opponent){
+            case "user":
+                roomRepository.deleteById(roomId);
+                // new game
+            case "AI":
+                //TODO
+        }
     }
 }
