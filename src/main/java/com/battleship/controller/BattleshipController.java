@@ -98,4 +98,15 @@ public class BattleshipController {
         battleshipService.play(opponent, roomId, userId);
     }
 
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Room.class))}),
+            @ApiResponse(responseCode = "404", description = "Service not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @RequestMapping(path = "/rooms", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Room> getRooms(){
+        return battleshipService.getRooms();
+    }
 }

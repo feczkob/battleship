@@ -60,4 +60,8 @@ public class BattleshipService {
                 //TODO
         }
     }
+
+    public List<Room> getRooms(){
+        return roomRepository.findAll();
+    }
 }
