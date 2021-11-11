@@ -29,7 +29,7 @@ public class BattleshipController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/profile/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User findById(@PathVariable Long id){
+    public User findById(@PathVariable String id){
         return battleshipService.findById(id);
     }
 
@@ -66,7 +66,7 @@ public class BattleshipController {
     })
     @RequestMapping(path = "/profile/changeUsername", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public User changeUsername(
-            @RequestParam Long Id,
+            @RequestParam String Id,
             @RequestParam String newUsername){
         return battleshipService.changeUsername(Id, newUsername);
     }
@@ -79,7 +79,7 @@ public class BattleshipController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/createRoom", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Room createRoom(@RequestParam Long userId){
+    public Room createRoom(@RequestParam String userId){
         return battleshipService.createRoom(userId);
     }
 
@@ -94,7 +94,7 @@ public class BattleshipController {
     public void play(
             @PathVariable String opponent,
             @RequestParam Long roomId,
-            @RequestParam Long userId){
+            @RequestParam String userId){
         battleshipService.play(opponent, roomId, userId);
     }
 

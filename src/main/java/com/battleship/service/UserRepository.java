@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<User, String> {
     User save(User user);
-    Optional<User> findById(Long Id);
+    Optional<User> findById(String Id);
     List<User> findAll();
 }

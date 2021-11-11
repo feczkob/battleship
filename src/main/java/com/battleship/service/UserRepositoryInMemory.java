@@ -14,7 +14,7 @@ public class UserRepositoryInMemory {
 
     private List<User> createUsers() {
         List<User> u = new ArrayList<>();
-        u.add(new User(1L, "Tomi"));
+        u.add(new User("1", "Tomi"));
         return u;
     }
 

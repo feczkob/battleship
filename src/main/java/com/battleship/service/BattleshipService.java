@@ -16,7 +16,7 @@ public class BattleshipService {
     @Autowired
     private RoomRepository roomRepository;
 
-    public User findById(Long Id){
+    public User findById(String Id){
         if(userRepository.findById(Id).isPresent())
             return userRepository.findById(Id).get();
         throw new RuntimeException("user.not.found");
@@ -30,7 +30,7 @@ public class BattleshipService {
         return userRepository.save(user);
     }
 
-    public User changeUsername(Long Id, String newUsername){
+    public User changeUsername(String Id, String newUsername){
         Optional<User> userTmp = userRepository.findById(Id);
         if(userTmp.isPresent()){
             userTmp.get().setName(newUsername);
@@ -40,7 +40,7 @@ public class BattleshipService {
         throw new RuntimeException("user.not.found");
     }
 
-    public Room createRoom(Long userId){
+    public Room createRoom(String userId){
         Optional<User> userTmp = userRepository.findById(userId);
         if (userTmp.isPresent()){
             Room room = new Room(userTmp.get().getId());
@@ -50,7 +50,7 @@ public class BattleshipService {
         else throw new RuntimeException("no.such.user");
     }
 
-    public void play(String opponent, Long roomId, Long userId){
+    public void play(String opponent, Long roomId, String userId){
 
         switch (opponent){
             case "user":

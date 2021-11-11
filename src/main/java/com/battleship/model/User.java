@@ -15,8 +15,7 @@ import javax.validation.constraints.NotNull;
 @Table(name = "user")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private String Id;
 
     @NotNull
     @NotBlank(message = "Name is mandatory")
@@ -27,7 +26,7 @@ public class User {
     private int gamesWonVsAi = 0;
     private int gamesWonVsUser = 0;
 
-    public User(Long id, String name){
+    public User(String id, String name){
         this.Id = id;
         this.name = name;
     }
