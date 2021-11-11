@@ -21,7 +21,7 @@ public class BattleshipController {
     @Autowired
     private BattleshipService battleshipService;
 
-    @Schema(name = "findById",description = "Find user by Id")
+    @Schema(name = "findById",description = "Find user by Id and if not found create a new user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                 content = {@Content(mediaType = "application/json",
@@ -47,7 +47,7 @@ public class BattleshipController {
         return battleshipService.findAll();
     }
 
-    @Schema(name = "addUser",description = "Add user")
+    @Schema(name = "addUser",description = "Add user - not used")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation",
                     content = {@Content(mediaType = "application/json",
@@ -56,7 +56,7 @@ public class BattleshipController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/profile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User addUser(@Valid @RequestBody User user){
+    public User addUser(@Valid @RequestParam User user){
         return battleshipService.save(user);
     }
 

@@ -17,9 +17,13 @@ public class BattleshipService {
     private RoomRepository roomRepository;
 
     public User findById(String Id){
-        if(userRepository.findById(Id).isPresent())
+        if(userRepository.findById(Id).isPresent()) {
             return userRepository.findById(Id).get();
-        throw new RuntimeException("user.not.found");
+        } else {
+            User userTmp = new User(Id, "Player1");
+            userRepository.save(userTmp);
+            return userTmp;
+        }
     }
 
     public List<User> findAll(){
