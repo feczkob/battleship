@@ -21,6 +21,7 @@ public class BattleshipController {
     @Autowired
     private BattleshipService battleshipService;
 
+    @Schema(name = "findById",description = "Find user by Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                 content = {@Content(mediaType = "application/json",
@@ -33,6 +34,7 @@ public class BattleshipController {
         return battleshipService.findById(id);
     }
 
+    @Schema(name = "findAll", description = "Find all users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
@@ -45,6 +47,7 @@ public class BattleshipController {
         return battleshipService.findAll();
     }
 
+    @Schema(name = "addUser",description = "Add user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation",
                     content = {@Content(mediaType = "application/json",
@@ -57,6 +60,7 @@ public class BattleshipController {
         return battleshipService.save(user);
     }
 
+    @Schema(name = "changeUsername",description = "Change username by Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
@@ -71,6 +75,7 @@ public class BattleshipController {
         return battleshipService.changeUsername(Id, newUsername);
     }
 
+    @Schema(name = "createRoom",description = "Create room for multi player game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
@@ -83,21 +88,36 @@ public class BattleshipController {
         return battleshipService.createRoom(userId);
     }
 
+    @Schema(name = "playSinglePlayer",description = "Play single player game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = User.class))}),
+                    content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/play/opponent={opponent}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void play(
+    public void playSinglePlayer(
+            @PathVariable String opponent){
+        battleshipService.play(opponent, 0L, "");
+    }
+
+    @Schema(name = "playMultiPlayer", description = "Play multi player game")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval",
+                    content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Service not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @RequestMapping(path = "/play/{roomId}/opponent={opponent}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void playMultiPlayer(
             @PathVariable String opponent,
-            @RequestParam Long roomId,
-            @RequestParam String userId){
+            @PathVariable Long roomId,
+            @RequestParam String userId
+    ){
         battleshipService.play(opponent, roomId, userId);
     }
 
+    @Schema(name = "getRooms",description = "Find all rooms")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
@@ -108,5 +128,20 @@ public class BattleshipController {
     @RequestMapping(path = "/rooms", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Room> getRooms(){
         return battleshipService.getRooms();
+    }
+
+    @Schema(name = "shoot",description = "Shoot to a specific field")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval",
+                    content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Service not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @RequestMapping(path = "/play/shoot", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void shoot(
+            @RequestParam String userId,
+            @RequestParam int fieldId
+    ){
+        battleshipService.shoot(userId, fieldId);
     }
 }

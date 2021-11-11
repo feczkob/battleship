@@ -56,6 +56,7 @@ public class BattleshipService {
             case "user":
                 roomRepository.deleteById(roomId);
                 // new game
+                //TODO
             case "AI":
                 //TODO
         }
@@ -63,5 +64,9 @@ public class BattleshipService {
 
     public List<Room> getRooms(){
         return roomRepository.findAll();
+    }
+
+    public void shoot(String userId, int fieldId) {
+        //TODO
     }
 }
