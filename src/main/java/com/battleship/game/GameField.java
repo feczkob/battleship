@@ -24,6 +24,10 @@ public class GameField {
         Arrays.fill(field, GRIDSTATE.WATER);
     }
 
+    public GameField(GameField gameField){
+        this.field = gameField.field;
+    }
+
     public static void main(String[] args) {
         GameField gameField = new GameField();
         System.out.println(gameField);

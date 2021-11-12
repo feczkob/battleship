@@ -3,35 +3,57 @@ package com.battleship.game;
 import java.util.ArrayList;
 
 public class GameLogic {
-    GameField gameFieldPlayer1;
-    Ships shipsPlayer1;
-    GameField gameFieldPlayer2;
-    Ships shipsPlayer2;
+    GameState[] gameStates;
 
-    public GameLogic(){
-        gameFieldPlayer1 = new GameField();
-        shipsPlayer1 = new Ships();
-        placeShipsToField(gameFieldPlayer1, shipsPlayer1);
-        gameFieldPlayer2 = new GameField();
-        shipsPlayer2 = new Ships();
-        placeShipsToField(gameFieldPlayer2, shipsPlayer2);
+    public GameLogic(String player1, String player2){
+        gameStates = new GameState[2];
+        gameStates[0] = new GameState(player1);
+        gameStates[1] = new GameState(player2);
     }
 
-    private void placeShipsToField(GameField gameField, Ships ships){
+    private GameField placeShipsToField(GameField gameField, Ships ships){
         for (ArrayList<Integer> a: ships.ships) {
             for (Integer pos: a) {
                 gameField.field[pos] = GRIDSTATE.SHIP;
             }
         }
+        return gameField;
+    }
+
+    GRIDSTATE shoot(String Id, Integer fieldId){
+        GRIDSTATE response;
+        if(Id.equals(gameStates[0].Id)){
+            response = gameStates[1].shoot(fieldId);
+            gameStates[0].opponentGameField.field[fieldId] = response;
+        } else {
+            response = gameStates[0].shoot(fieldId);
+            gameStates[1].opponentGameField.field[fieldId] = response;
+        }
+        return response;
+    }
+
+    String myPerspective(String Id){
+        StringBuilder stringBuilder = new StringBuilder();
+        GameField myGameField;
+        if(Id.equals(gameStates[0].Id)){
+            stringBuilder.append(gameStates[0].opponentGameField);
+            myGameField = new GameField(gameStates[1].opponentGameField);
+            stringBuilder.append(placeShipsToField(myGameField, gameStates[0].myShips));
+        } else {
+            stringBuilder.append(gameStates[1].opponentGameField);
+            myGameField = new GameField(gameStates[0].opponentGameField);
+            stringBuilder.append(placeShipsToField(myGameField, gameStates[1].myShips));
+        }
+        return stringBuilder.toString();
     }
 
     @Override
     public String toString() {
-        return "Player1\n" + gameFieldPlayer1 + "\nPlayer2\n" + gameFieldPlayer2;
+        return "";
     }
 
     public static void main(String[] args) {
-        GameLogic gameLogic = new GameLogic();
+        GameLogic gameLogic = new GameLogic("player1", "player2");
         System.out.println(gameLogic);
     }
 }
