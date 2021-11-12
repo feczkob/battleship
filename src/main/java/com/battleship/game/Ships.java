@@ -50,6 +50,8 @@ public class Ships {
 
     @Override
     public String toString() {
-        return "";
+        return "Ships{" +
+                "ships=" + ships +
+                '}';
     }
 }

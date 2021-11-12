@@ -1,8 +1,11 @@
 package com.battleship.game;
 
 
+import lombok.Getter;
+
 import java.util.Arrays;
 
+@Getter
 public class GameField {
     GRIDSTATE[] field = new GRIDSTATE[100];
 

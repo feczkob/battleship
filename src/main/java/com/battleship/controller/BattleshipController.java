@@ -1,6 +1,9 @@
 package com.battleship.controller;
 
+import com.battleship.game.GRIDSTATE;
+import com.battleship.game.GameField;
 import com.battleship.model.Room;
+import com.battleship.model.ShootResponseDTO;
 import com.battleship.model.User;
 import com.battleship.service.BattleshipService;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -96,9 +99,10 @@ public class BattleshipController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/play/opponent={opponent}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void playSinglePlayer(
-            @PathVariable String opponent){
-        battleshipService.play(opponent, 0L, "");
+    public GameField playSinglePlayer(
+            @PathVariable String opponent,
+            @RequestParam String userId){
+        return battleshipService.play(opponent, 0L, userId);
     }
 
     @Schema(name = "playMultiPlayer", description = "Play multi player game")
@@ -109,12 +113,11 @@ public class BattleshipController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/play/{roomId}/opponent={opponent}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void playMultiPlayer(
+    public GameField playMultiPlayer(
             @PathVariable String opponent,
             @PathVariable Long roomId,
-            @RequestParam String userId
-    ){
-        battleshipService.play(opponent, roomId, userId);
+            @RequestParam String userId){
+        return battleshipService.play(opponent, roomId, userId);
     }
 
     @Schema(name = "getRooms",description = "Find all rooms")
@@ -138,10 +141,10 @@ public class BattleshipController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/play/shoot", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void shoot(
+    public ShootResponseDTO shoot(
             @RequestParam String userId,
             @RequestParam int fieldId
     ){
-        battleshipService.shoot(userId, fieldId);
+        return battleshipService.shoot(userId, fieldId);
     }
 }

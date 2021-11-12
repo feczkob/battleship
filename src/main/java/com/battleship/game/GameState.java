@@ -22,4 +22,13 @@ public class GameState {
     public GRIDSTATE shoot(Integer field){
         return myShips.shoot(field);
     }
+
+    @Override
+    public String toString() {
+        return "GameState{" +
+                "opponentGameField=" + opponentGameField +
+                ", myShips=" + myShips +
+                ", Id='" + Id + '\'' +
+                '}';
+    }
 }

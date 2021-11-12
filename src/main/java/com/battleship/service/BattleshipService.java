@@ -1,12 +1,16 @@
 package com.battleship.service;
 
+import com.battleship.game.GRIDSTATE;
+import com.battleship.game.Game;
+import com.battleship.game.GameField;
+import com.battleship.game.Robot;
 import com.battleship.model.Room;
+import com.battleship.model.ShootResponseDTO;
 import com.battleship.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class BattleshipService {
@@ -15,6 +19,8 @@ public class BattleshipService {
 
     @Autowired
     private RoomRepository roomRepository;
+
+    private final Map<String, Game> games = new HashMap<>();
 
     public User findById(String Id){
         if(userRepository.findById(Id).isPresent()) {
@@ -54,23 +60,48 @@ public class BattleshipService {
         else throw new RuntimeException("no.such.user");
     }
 
-    public void play(String opponent, Long roomId, String userId){
-
+    public GameField play(String opponent, Long roomId, String userId){
+        Game game;
         switch (opponent){
             case "user":
+                if(roomRepository.findById(roomId).isPresent()) {
+                    String roomUserId = roomRepository.findById(roomId).get().getUserId();
+                    game = new Game(roomUserId, userId);
+                    games.put(roomUserId, game);
+                    games.put(userId, game);
+                } else throw new RuntimeException("room.not.exist");
                 roomRepository.deleteById(roomId);
-                // new game
-                //TODO
-            case "AI":
-                //TODO
+                break;
+            case "robot":
+                game = new Game(userId);
+                System.out.println(game);
+                games.put(userId, game);
+                break;
+            default:
+                throw new RuntimeException("no.such.game.mode");
         }
+        //game.getGameLogic().getGameField(userId);
+        return game.getGameField(userId);
     }
 
     public List<Room> getRooms(){
         return roomRepository.findAll();
     }
 
-    public void shoot(String userId, int fieldId) {
-        //TODO
+    public ShootResponseDTO shoot(String userId, int fieldId) {
+        Game game = games.get(userId);
+        if(game == null) throw new RuntimeException("no.such.game");
+        ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
+        shootResponseDTO.setPlayer1(userId);
+        shootResponseDTO.setField1(fieldId);
+        shootResponseDTO.setGridstate1(game.shoot(userId, fieldId));
+        if(game.getPlayer2().equals("robot"))  {
+            Integer field2 = Robot.shoot();
+            shootResponseDTO.setPlayer2("robot");
+            shootResponseDTO.setField2(field2);
+            shootResponseDTO.setGridstate2(game.shoot("robot", field2));
+        }
+        return shootResponseDTO;
+        // vissza kell terni a masik ember lovesenek eredmenyevel is
     }
 }

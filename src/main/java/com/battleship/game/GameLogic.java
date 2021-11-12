@@ -1,6 +1,7 @@
 package com.battleship.game;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GameLogic {
     GameState[] gameStates;
@@ -32,6 +33,15 @@ public class GameLogic {
         return response;
     }
 
+    public GameField getGameField(String id) {
+        GameField myGameField;
+        if(gameStates[0].Id.equals(id)) {
+            myGameField = placeShipsToField(new GameField(gameStates[1].opponentGameField), gameStates[0].myShips);
+        } else myGameField = placeShipsToField(new GameField(gameStates[0].opponentGameField), gameStates[1].myShips);
+
+        return myGameField;
+    }
+
     String myPerspective(String Id){
         StringBuilder stringBuilder = new StringBuilder();
         GameField myGameField;
@@ -49,11 +59,17 @@ public class GameLogic {
 
     @Override
     public String toString() {
-        return "";
+        return "GameLogic{" +
+                "gameStates=" + Arrays.toString(gameStates) +
+                '}';
     }
 
     public static void main(String[] args) {
         GameLogic gameLogic = new GameLogic("player1", "player2");
         System.out.println(gameLogic);
+    }
+
+    public String getPlayer2() {
+        return gameStates[1].Id;
     }
 }
