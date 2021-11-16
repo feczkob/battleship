@@ -1,6 +1,5 @@
 package com.battleship.service;
 
-import com.battleship.game.GRIDSTATE;
 import com.battleship.game.Game;
 import com.battleship.game.GameField;
 import com.battleship.game.Robot;
@@ -12,16 +11,35 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+/**
+ * Service class
+ */
 @Service
 public class BattleshipService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final RoomRepository roomRepository;
 
-    @Autowired
-    private RoomRepository roomRepository;
-
+    /**
+     * Players with associated games
+     */
     private final Map<String, Game> games = new HashMap<>();
 
+    /**
+     * Injection of repositories
+     * @param userRepository repository of users
+     * @param roomRepository repository of rooms
+     */
+    @Autowired
+    public BattleshipService(UserRepository userRepository, RoomRepository roomRepository){
+        this.userRepository = userRepository;
+        this.roomRepository = roomRepository;
+    }
+
+    /**
+     * Find user by Id
+     * @param Id Id of user
+     * @return user
+     */
     public User findById(String Id){
         if(userRepository.findById(Id).isPresent()) {
             return userRepository.findById(Id).get();
@@ -32,14 +50,29 @@ public class BattleshipService {
         }
     }
 
+    /**
+     * Find all users
+     * @return list of users
+     */
     public List<User> findAll(){
         return userRepository.findAll();
     }
 
+    /**
+     * Save user to the repository
+     * @param user user to be saved
+     * @return user
+     */
     public User save(User user){
         return userRepository.save(user);
     }
 
+    /**
+     * Change username
+     * @param Id Id of user
+     * @param newUsername new username
+     * @return user
+     */
     public User changeUsername(String Id, String newUsername){
         Optional<User> userTmp = userRepository.findById(Id);
         if(userTmp.isPresent()){
@@ -50,6 +83,11 @@ public class BattleshipService {
         throw new RuntimeException("user.not.found");
     }
 
+    /**
+     * Create a room
+     * @param userId owner of room
+     * @return room
+     */
     public Room createRoom(String userId){
         Optional<User> userTmp = userRepository.findById(userId);
         if (userTmp.isPresent()){
@@ -60,6 +98,13 @@ public class BattleshipService {
         else throw new RuntimeException("no.such.user");
     }
 
+    /**
+     * Start a game
+     * @param opponent "user" or "robot"
+     * @param roomId Id of the room in case of multiplayer game
+     * @param userId user who joins the room or starts a single player game
+     * @return initial state of the game field
+     */
     public GameField play(String opponent, Long roomId, String userId){
         Game game;
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
@@ -83,17 +128,26 @@ public class BattleshipService {
         return game.getGameField(userId);
     }
 
+    /**
+     * Get the list of rooms
+     * @return list of rooms
+     */
     public List<Room> getRooms(){
         return roomRepository.findAll();
     }
 
+    /**
+     * Shoot at a specific field
+     * @param userId user who shoots
+     * @param fieldId field to be shot at
+     * @return response with the outcomes
+     */
     public ShootResponseDTO shoot(String userId, int fieldId) {
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         Game game = games.get(userId);
         if(game == null) throw new RuntimeException("no.such.game");
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
 
-        // I am player one
         shootResponseDTO.setPlayer1(userId);
         shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
         shootResponseDTO.setPlayer2(game.getOtherPlayer(userId));
@@ -102,11 +156,9 @@ public class BattleshipService {
             game.shoot("robot", field2);
         }
         shootResponseDTO.setGameField1(game.getGameField(userId));
-
         shootResponseDTO.setFinished(game.getIsFinished());
         shootResponseDTO.setWinner(game.getWinner());
 
         return shootResponseDTO;
-        // vissza kell terni a masik ember lovesenek eredmenyevel is
     }
 }

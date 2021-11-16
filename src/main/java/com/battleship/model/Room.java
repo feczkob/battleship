@@ -3,10 +3,11 @@ package com.battleship.model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
-import java.util.ArrayList;
 
+/**
+ * Entity class for rooms
+ */
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode

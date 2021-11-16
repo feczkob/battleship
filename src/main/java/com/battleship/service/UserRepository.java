@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository of users
+ */
 @Repository
 public interface UserRepository extends CrudRepository<User, String> {
     User save(User user);

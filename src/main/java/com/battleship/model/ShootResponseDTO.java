@@ -3,18 +3,31 @@ package com.battleship.model;
 import com.battleship.game.GameField;
 import lombok.*;
 
+/**
+ * Response class that is sent to the clients
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ShootResponseDTO {
-    // my Id
+    /**
+     * Id of the player to whom this object is sent
+     */
     String player1;
-    // my gameField
+
+    /**
+     * Game field of the player to whom this object is sent
+     */
     GameField gameField1;
 
-    // opponent's Id
+    /**
+     * Id of the opponent
+     */
     String player2;
-    // opponent's gameField
+
+    /**
+     * Game field of the opponent
+     */
     GameField gameField2;
 
     boolean isFinished = false;

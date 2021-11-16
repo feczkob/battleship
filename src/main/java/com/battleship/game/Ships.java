@@ -3,9 +3,17 @@ package com.battleship.game;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Ships class containing the positions of the player's ships
+ */
 public class Ships {
     volatile ArrayList<ArrayList<Integer>>   ships;
 
+    /**
+     * Shoot at a specific field
+     * @param field field to be shot at
+     * @return resulting grid state
+     */
     public GRIDSTATE shoot(Integer field){
         for (ArrayList<Integer> a: ships) {
             if(a.contains(field)){
@@ -17,15 +25,26 @@ public class Ships {
         return GRIDSTATE.MISS;
     }
 
+    /**
+     * Get if the game is finished
+     * @return boolean
+     */
     public boolean getIsFinished(){
         return ships.isEmpty();
     }
 
+    /**
+     * Constructor
+     */
     public Ships() {
         ships = new ArrayList<>();
         ships = generateShips();
     }
 
+    /**
+     * Function to generate ships at random positions
+     * @return positions of ships
+     */
     private ArrayList<ArrayList<Integer>> generateShips(){
         //TODO
         ArrayList<ArrayList<Integer>> shipsTmp = new ArrayList<>();

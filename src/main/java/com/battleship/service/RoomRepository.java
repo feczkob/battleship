@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repository of rooms
+ */
 @Repository
 public interface RoomRepository extends CrudRepository<Room, Long> {
     Room save(Room room);

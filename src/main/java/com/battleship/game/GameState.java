@@ -1,24 +1,37 @@
 package com.battleship.game;
 
+/**
+ * Game state class
+ * contains the player's ships and the knowledge of the other player's field
+ */
 public class GameState {
     volatile GameField opponentGameField;
     volatile Ships myShips;
     volatile String Id;
 
+    /**
+     * Constructor
+     * @param Id Id of the player
+     */
     public GameState(String Id) {
         opponentGameField = new GameField();
         myShips = new Ships();
         this.Id = Id;
     }
 
-    public Ships getMyShips() {
-        return myShips;
-    }
-
+    /**
+     * Get the Id of the player
+     * @return Id
+     */
     public String getId() {
         return Id;
     }
 
+    /**
+     * Shoot at a specific field
+     * @param field field to be shot at
+     * @return resulting grid state
+     */
     public GRIDSTATE shoot(Integer field){
         return myShips.shoot(field);
     }

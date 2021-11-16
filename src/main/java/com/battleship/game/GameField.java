@@ -2,12 +2,29 @@ package com.battleship.game;
 
 
 import lombok.Getter;
-
 import java.util.Arrays;
 
+/**
+ * Game field class containing the 10x10 grids and their states
+ */
 @Getter
 public class GameField {
     volatile GRIDSTATE[] field = new GRIDSTATE[100];
+
+    /**
+     * Constructor
+     */
+    public GameField() {
+        Arrays.fill(field, GRIDSTATE.WATER);
+    }
+
+    /**
+     * Copy constructor
+     * @param gameField game field to be copied
+     */
+    public GameField(GameField gameField){
+        this.field = gameField.field;
+    }
 
     @Override
     public String toString() {
@@ -21,18 +38,5 @@ public class GameField {
             }
         }
         return stringBuilder.toString();
-    }
-
-    public GameField() {
-        Arrays.fill(field, GRIDSTATE.WATER);
-    }
-
-    public GameField(GameField gameField){
-        this.field = gameField.field;
-    }
-
-    public static void main(String[] args) {
-        GameField gameField = new GameField();
-        System.out.println(gameField);
     }
 }

@@ -17,13 +17,29 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-
+/**
+ * Controller class for the server-side application
+ */
 @RestController
 @RequestMapping("/api")
 public class BattleshipController {
-    @Autowired
-    private BattleshipService battleshipService;
 
+    private final BattleshipService battleshipService;
+
+    /**
+     * Injection of service instance
+     * @param battleshipService service
+     */
+    @Autowired
+    public BattleshipController(BattleshipService battleshipService){
+        this.battleshipService = battleshipService;
+    }
+
+    /**
+     * Find user by Id
+     * @param id Id of user
+     * @return user
+     */
     @Schema(name = "findById",description = "Find user by Id and if not found create a new user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
@@ -37,6 +53,10 @@ public class BattleshipController {
         return battleshipService.findById(id);
     }
 
+    /**
+     * Find all users
+     * @return list of users
+     */
     @Schema(name = "findAll", description = "Find all users")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
@@ -50,6 +70,11 @@ public class BattleshipController {
         return battleshipService.findAll();
     }
 
+    /**
+     * Save user to the repository
+     * @param user user to be saved
+     * @return user
+     */
     @Schema(name = "addUser",description = "Add user - not used")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful operation",
@@ -63,6 +88,12 @@ public class BattleshipController {
         return battleshipService.save(user);
     }
 
+    /**
+     * Change username
+     * @param Id Id of user
+     * @param newUsername new username
+     * @return user
+     */
     @Schema(name = "changeUsername",description = "Change username by Id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
@@ -78,6 +109,11 @@ public class BattleshipController {
         return battleshipService.changeUsername(Id, newUsername);
     }
 
+    /**
+     * Create a room
+     * @param userId owner of room
+     * @return room
+     */
     @Schema(name = "createRoom",description = "Create room for multi player game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
@@ -91,7 +127,13 @@ public class BattleshipController {
         return battleshipService.createRoom(userId);
     }
 
-    @Schema(name = "playSinglePlayer",description = "Play single player game")
+    /**
+     * Play in single player game mode
+     * @param opponent "robot"
+     * @param userId Id of the player
+     * @return initial state of game field
+     */
+    @Schema(name = "playSinglePlayer", description = "Play single player game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json")}),
@@ -105,6 +147,13 @@ public class BattleshipController {
         return battleshipService.play(opponent, 0L, userId);
     }
 
+    /**
+     * Play in multiplayer game mode
+     * @param opponent Id of the opponent
+     * @param roomId Id of the room
+     * @param userId Id of the player
+     * @return initial state of the game field
+     */
     @Schema(name = "playMultiPlayer", description = "Play multi player game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
@@ -120,6 +169,10 @@ public class BattleshipController {
         return battleshipService.play(opponent, roomId, userId);
     }
 
+    /**
+     * Get the list of rooms
+     * @return list of rooms
+     */
     @Schema(name = "getRooms",description = "Find all rooms")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
@@ -133,6 +186,12 @@ public class BattleshipController {
         return battleshipService.getRooms();
     }
 
+    /**
+     * Shoot at a specific field
+     * @param userId user who shoots
+     * @param fieldId field to be shot at
+     * @return response with the outcomes
+     */
     @Schema(name = "shoot",description = "Shoot to a specific field")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",

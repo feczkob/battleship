@@ -7,6 +7,9 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Unused in-memory repository of users
+ */
 @Repository
 @NoArgsConstructor
 public class UserRepositoryInMemory {
@@ -18,7 +21,7 @@ public class UserRepositoryInMemory {
         return u;
     }
 
-    public User findById(Long id){
+    public User findById(String id){
         for (User user: users) {
             if(user.getId().equals(id)){
                 return user;
@@ -36,7 +39,7 @@ public class UserRepositoryInMemory {
         return user;
     }
 
-    public User changeUsername(Long id, String newUsername) {
+    public User changeUsername(String id, String newUsername) {
         User user = findById(id);
         user.setName(newUsername);
         return user;
