@@ -75,7 +75,6 @@ public class BattleshipService {
                 break;
             case "robot":
                 game = new Game(userId);
-                System.out.println(game);
                 games.put(userId, game);
                 break;
             default:

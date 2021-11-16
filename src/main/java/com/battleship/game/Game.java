@@ -29,7 +29,6 @@ public class Game {
                 Thread.onSpinWait();
             }
         }
-        System.out.println("Game::shoot");
         return gameLogic.shoot(Id, fieldId);
     }
 
