@@ -62,6 +62,7 @@ public class BattleshipService {
 
     public GameField play(String opponent, Long roomId, String userId){
         Game game;
+        if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         switch (opponent){
             case "user":
                 if(roomRepository.findById(roomId).isPresent()) {
@@ -80,7 +81,6 @@ public class BattleshipService {
             default:
                 throw new RuntimeException("no.such.game.mode");
         }
-        //game.getGameLogic().getGameField(userId);
         return game.getGameField(userId);
     }
 
@@ -89,18 +89,24 @@ public class BattleshipService {
     }
 
     public ShootResponseDTO shoot(String userId, int fieldId) {
+        if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         Game game = games.get(userId);
         if(game == null) throw new RuntimeException("no.such.game");
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
+
+        // I am player one
         shootResponseDTO.setPlayer1(userId);
-        shootResponseDTO.setField1(fieldId);
-        shootResponseDTO.setGridstate1(game.shoot(userId, fieldId));
-        if(game.getPlayer2().equals("robot"))  {
+        shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
+        shootResponseDTO.setPlayer2(game.getOtherPlayer(userId));
+        if(game.getOtherPlayer(userId).equals("robot"))  {
             Integer field2 = Robot.shoot();
-            shootResponseDTO.setPlayer2("robot");
-            shootResponseDTO.setField2(field2);
-            shootResponseDTO.setGridstate2(game.shoot("robot", field2));
+            game.shoot("robot", field2);
         }
+        shootResponseDTO.setGameField1(game.getGameField(userId));
+
+        shootResponseDTO.setFinished(game.getIsFinished());
+        shootResponseDTO.setWinner(game.getWinner());
+
         return shootResponseDTO;
         // vissza kell terni a masik ember lovesenek eredmenyevel is
     }

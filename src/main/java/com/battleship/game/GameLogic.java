@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GameLogic {
-    GameState[] gameStates;
+    private final GameState[] gameStates;
+    private boolean isFinished;
+    private String winner;
 
     public GameLogic(String player1, String player2){
         gameStates = new GameState[2];
@@ -21,16 +23,32 @@ public class GameLogic {
         return gameField;
     }
 
-    GRIDSTATE shoot(String Id, Integer fieldId){
+    public boolean getIsFinished() {
+        return isFinished;
+    }
+
+    GameField shoot(String Id, Integer fieldId){
         GRIDSTATE response;
+        // opponent's gameField in my perspective
+        GameField gameField;
         if(Id.equals(gameStates[0].Id)){
             response = gameStates[1].shoot(fieldId);
+            isFinished = gameStates[1].myShips.getIsFinished();
             gameStates[0].opponentGameField.field[fieldId] = response;
+            gameField = gameStates[0].opponentGameField;
         } else {
             response = gameStates[0].shoot(fieldId);
+            isFinished = gameStates[0].myShips.getIsFinished();
             gameStates[1].opponentGameField.field[fieldId] = response;
+            gameField = gameStates[1].opponentGameField;
         }
-        return response;
+        if(response == GRIDSTATE.SUNKEN)    changeHitToSunken(gameField);
+        if(isFinished) winner = Id;
+        return gameField;
+    }
+
+    private void changeHitToSunken(GameField gameField) {
+        //TODO
     }
 
     public GameField getGameField(String id) {
@@ -42,19 +60,15 @@ public class GameLogic {
         return myGameField;
     }
 
-    String myPerspective(String Id){
-        StringBuilder stringBuilder = new StringBuilder();
+    GameField myPerspective(String Id){
         GameField myGameField;
         if(Id.equals(gameStates[0].Id)){
-            stringBuilder.append(gameStates[0].opponentGameField);
             myGameField = new GameField(gameStates[1].opponentGameField);
-            stringBuilder.append(placeShipsToField(myGameField, gameStates[0].myShips));
+            return placeShipsToField(myGameField, gameStates[0].myShips);
         } else {
-            stringBuilder.append(gameStates[1].opponentGameField);
             myGameField = new GameField(gameStates[0].opponentGameField);
-            stringBuilder.append(placeShipsToField(myGameField, gameStates[1].myShips));
+            return placeShipsToField(myGameField, gameStates[1].myShips);
         }
-        return stringBuilder.toString();
     }
 
     @Override
@@ -69,7 +83,13 @@ public class GameLogic {
         System.out.println(gameLogic);
     }
 
-    public String getPlayer2() {
-        return gameStates[1].Id;
+    public String getOtherPlayer(String Id) {
+        if(gameStates[0].Id.equals(Id)) return gameStates[1].Id;
+
+        return gameStates[0].Id;
+    }
+
+    public String getWinner() {
+        return winner;
     }
 }

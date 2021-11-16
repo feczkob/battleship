@@ -17,6 +17,10 @@ public class Ships {
         return GRIDSTATE.MISS;
     }
 
+    public boolean getIsFinished(){
+        return ships.isEmpty();
+    }
+
     public Ships() {
         ships = new ArrayList<>();
         ships = generateShips();
