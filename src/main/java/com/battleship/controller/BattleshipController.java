@@ -44,7 +44,7 @@ public class BattleshipController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                 content = {@Content(mediaType = "application/json",
-                schema = @Schema(implementation = User.class))}),
+                        schema = @Schema(implementation = User.class))}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
@@ -118,7 +118,7 @@ public class BattleshipController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Room.class))}),
+                            schema = @Schema(implementation = GameField.class))}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
@@ -134,8 +134,7 @@ public class BattleshipController {
     @Schema(name = "leaveRoom",description = "Leave room")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Room.class))}),
+                    content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
@@ -152,7 +151,8 @@ public class BattleshipController {
     @Schema(name = "playSinglePlayer", description = "Play single player game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
-                    content = {@Content(mediaType = "application/json")}),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GameField.class))}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
@@ -173,7 +173,8 @@ public class BattleshipController {
     @Schema(name = "playMultiPlayer", description = "Play multi player game")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
-                    content = {@Content(mediaType = "application/json")}),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GameField.class))}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
@@ -211,7 +212,8 @@ public class BattleshipController {
     @Schema(name = "shoot",description = "Shoot to a specific field")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
-                    content = {@Content(mediaType = "application/json")}),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ShootResponseDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })

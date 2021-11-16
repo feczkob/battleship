@@ -95,7 +95,7 @@ public class BattleshipService {
     /**
      * Create a room
      * @param userId owner of room
-     * @return room
+     * @return initial state of the game field
      */
     public GameField createRoom(String userId){
         Optional<User> userTmp = userRepository.findById(userId);
