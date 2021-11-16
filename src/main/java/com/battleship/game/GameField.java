@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 @Getter
 public class GameField {
-    GRIDSTATE[] field = new GRIDSTATE[100];
+    volatile GRIDSTATE[] field = new GRIDSTATE[100];
 
     @Override
     public String toString() {

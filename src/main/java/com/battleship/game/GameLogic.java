@@ -5,8 +5,8 @@ import java.util.Arrays;
 
 public class GameLogic {
     private final GameState[] gameStates;
-    private boolean isFinished;
-    private String winner;
+    private volatile boolean isFinished;
+    private volatile String winner;
 
     public GameLogic(String player1, String player2){
         gameStates = new GameState[2];

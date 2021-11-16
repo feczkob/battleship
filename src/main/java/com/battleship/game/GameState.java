@@ -1,9 +1,9 @@
 package com.battleship.game;
 
 public class GameState {
-    GameField opponentGameField;
-    Ships myShips;
-    String Id;
+    volatile GameField opponentGameField;
+    volatile Ships myShips;
+    volatile String Id;
 
     public GameState(String Id) {
         opponentGameField = new GameField();

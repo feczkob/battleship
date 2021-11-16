@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Ships {
-    ArrayList<ArrayList<Integer>>   ships;
+    volatile ArrayList<ArrayList<Integer>>   ships;
 
     public GRIDSTATE shoot(Integer field){
         for (ArrayList<Integer> a: ships) {
