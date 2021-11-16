@@ -20,14 +20,23 @@ public class Game {
     }
 
     public GameField shoot(String Id, Integer fieldId){
-        //if(!getOtherPlayer(Id).equals("robot") || !Id.equals("robot")) {
         if(!Id.equals("robot") && !getOtherPlayer(Id).equals("robot")){
+            /**
+             * Only one thread can write this variable
+             */
             synchronized (counter) {
                 counter = counter + 1;
             }
+            /**
+             * Wait for the other player
+             */
             while (counter != 2) {
                 Thread.onSpinWait();
             }
+            /**
+             * Reset counter
+             */
+            counter = 0;
         }
         return gameLogic.shoot(Id, fieldId);
     }
