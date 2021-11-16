@@ -16,4 +16,6 @@ public interface RoomRepository extends CrudRepository<Room, Long> {
     Optional<Room> findById(Long Id);
     List<Room> findAll();
     void deleteById(Long Id);
+    void deleteByUserId(String userId);
+    Room findByUserId(String userId);
 }

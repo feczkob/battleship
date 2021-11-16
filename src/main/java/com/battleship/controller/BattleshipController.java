@@ -123,10 +123,26 @@ public class BattleshipController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/createRoom", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Room createRoom(@RequestParam String userId){
+    public GameField createRoom(@RequestParam String userId){
         return battleshipService.createRoom(userId);
     }
 
+    /**
+     * Create a room
+     * @param userId owner of room
+     */
+    @Schema(name = "leaveRoom",description = "Leave room")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Room.class))}),
+            @ApiResponse(responseCode = "404", description = "Service not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @RequestMapping(path = "/leaveRoom", method = RequestMethod.POST)
+    public void leaveRoom(@RequestParam String userId){
+        battleshipService.leaveRoom(userId);
+    }
     /**
      * Play in single player game mode
      * @param opponent "robot"

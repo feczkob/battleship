@@ -17,12 +17,21 @@ import java.util.*;
 @Service
 public class BattleshipService {
     private final UserRepository userRepository;
+
+    /**
+     * Repository for rooms - maybe not needed
+     */
     private final RoomRepository roomRepository;
 
     /**
      * Players with associated games
      */
     private final Map<String, Game> games = new HashMap<>();
+
+    /**
+     * Players with associated rooms
+     */
+    private final Map<String, Room> rooms = new HashMap<>();
 
     /**
      * Injection of repositories
@@ -88,14 +97,30 @@ public class BattleshipService {
      * @param userId owner of room
      * @return room
      */
-    public Room createRoom(String userId){
+    public GameField createRoom(String userId){
         Optional<User> userTmp = userRepository.findById(userId);
-        if (userTmp.isPresent()){
-            Room room = new Room(userTmp.get().getId());
-            roomRepository.save(room);
-            return room;
+        if (userTmp.isEmpty()) throw new RuntimeException("no.such.user");
+
+        Room room = new Room(userTmp.get().getId());
+        roomRepository.save(room);
+        rooms.put(userId, room);
+
+        synchronized (rooms.get(userId)){
+            try {
+                rooms.get(userId).wait();
+            } catch (InterruptedException e){
+                throw new RuntimeException("waiting.thread.interrupted");
+            }
         }
-        else throw new RuntimeException("no.such.user");
+        return games.get(userId).getGameField(userId);
+    }
+
+    /**
+     * Delete a room
+     * @param userId owner of room
+     */
+    public void leaveRoom(String userId) {
+        roomRepository.deleteByUserId(userId);
     }
 
     /**
@@ -110,13 +135,18 @@ public class BattleshipService {
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         switch (opponent){
             case "user":
-                if(roomRepository.findById(roomId).isPresent()) {
-                    String roomUserId = roomRepository.findById(roomId).get().getUserId();
-                    game = new Game(roomUserId, userId);
-                    games.put(roomUserId, game);
-                    games.put(userId, game);
-                } else throw new RuntimeException("room.not.exist");
+                Optional<Room> room = roomRepository.findById(roomId);
+                if(room.isEmpty()) throw new RuntimeException("room.not.exist");
+
+                String roomUserId = room.get().getUserId();
+                game = new Game(roomUserId, userId);
+                games.put(roomUserId, game);
+                games.put(userId, game);
+                synchronized (rooms.get(roomUserId)){
+                    rooms.get(roomUserId).notify();
+                }
                 roomRepository.deleteById(roomId);
+                rooms.remove(roomUserId);
                 break;
             case "robot":
                 game = new Game(userId);
@@ -161,4 +191,5 @@ public class BattleshipService {
 
         return shootResponseDTO;
     }
+
 }
