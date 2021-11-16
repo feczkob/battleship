@@ -139,7 +139,7 @@ public class BattleshipController {
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @RequestMapping(path = "/leaveRoom", method = RequestMethod.POST)
+    @RequestMapping(path = "/leaveRoom", method = RequestMethod.DELETE)
     public void leaveRoom(@RequestParam String userId){
         battleshipService.leaveRoom(userId);
     }
