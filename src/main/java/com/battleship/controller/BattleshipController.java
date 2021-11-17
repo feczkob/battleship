@@ -271,7 +271,7 @@ public class BattleshipController {
     @Operation(summary = "Get leaderboard ordered by games won", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = User.class))}),
+                            schema = @Schema(implementation = Leaderboard.class))}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })

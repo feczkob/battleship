@@ -30,11 +30,9 @@ public class Ships {
 
     /**
      * Get if the game is finished
-     * @param isFinished if the game finished in a result of the other player's shoot, then do not change the boolean
      * @return boolean
      */
-    public boolean getIsFinished(boolean isFinished){
-        if(isFinished)  return true;
+    public boolean getIsFinished(){
         return ships.isEmpty();
     }
 
