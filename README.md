@@ -1,7 +1,7 @@
 # battleship
 Project for the Integration of Information Systems course
 
-#The game <br />
+## The game <br />
 Battleship (also Battleships or Sea Battle) is a strategy type guessing game for two players. 
 It is played on ruled grids (paper or board) on which each player's fleet of ships (including battleships) are marked. 
 The locations of the fleets are concealed from the other player. Players alternate turns calling "shots" at the other player's ships, 
@@ -15,7 +15,7 @@ When the game starts the player is given an initial state of their ships:
 
 They can ask for new positions via a call to the corresponding API endpoint.
 
-#Features
+## Features
 1. Create new user if not exist
 2. Find user by Id
 3. Get all users
@@ -26,7 +26,7 @@ They can ask for new positions via a call to the corresponding API endpoint.
 8. Start a multiplayer game vs. a real user
 9. Shoot at a specific field: multiple shots at different fields from one player are disabled
 
-#Commands related to the app
+## Commands related to the app
 To run the app:
   1. ```docker-compose up``` in the ```\battleship\src\main\resources\docker``` folder.
   2. ```mvn spring-boot:run``` in the ```battleship``` folder.
@@ -36,7 +36,7 @@ To enter the MySQL container:  ```docker exec -it database mysql -uroot -ppasswo
 ```mysql> select * from room;``` or ```mysql> select * from user;``` <br />
 For other possible commands click [here](http://g2pc1.bu.edu/~qzpeng/manual/MySQL%20Commands.htm). <br />
 
-#Useful links
+## Useful links
 [Battleship](https://en.wikipedia.org/wiki/Battleship_(game)) <br/>
 [Docker for Windows](https://docs.docker.com/desktop/windows/install/) <br />
 If Docker Engine does not start, try [this](https://docs.microsoft.com/hu-hu/windows/wsl/install-manual#step-4---download-the-linux-kernel-update-package). <br />
