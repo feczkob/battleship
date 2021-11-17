@@ -3,6 +3,7 @@ package com.battleship.service;
 import com.battleship.game.Game;
 import com.battleship.game.GameField;
 import com.battleship.game.Robot;
+import com.battleship.model.Leaderboard;
 import com.battleship.model.Room;
 import com.battleship.model.ShootResponseDTO;
 import com.battleship.model.User;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Service class
@@ -29,13 +31,14 @@ public class BattleshipService {
 
     /**
      * Players with associated games
+     * concurrent map
      */
-    private final Map<String, Game> games = new HashMap<>();
+    private final Map<String, Game> games = new ConcurrentHashMap<>();
 
     /**
      * Players with associated threads
      */
-    private final Map<String, Thread> threads = new HashMap<>();
+    private final Map<String, Thread> threads = new ConcurrentHashMap<>();
 
     /**
      * Injection of repositories
@@ -247,10 +250,10 @@ public class BattleshipService {
     }
 
 
-    public List<User> getLeaderboard(String opponent) {
+    public Leaderboard getLeaderboard(String opponent) {
         if ("robot".equals(opponent)) {
-            return userRepository.findAllByOrderByGamesWonVsAiDesc();
+            return new Leaderboard(userRepository.findAllByOrderByGamesWonVsAiDesc());
         }
-        return userRepository.findAllByOrderByGamesWonVsUserDesc();
+        return new Leaderboard(userRepository.findAllByOrderByGamesWonVsUserDesc());
     }
 }

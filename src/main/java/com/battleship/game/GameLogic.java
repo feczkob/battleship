@@ -61,12 +61,12 @@ public class GameLogic {
         GameField gameField;
         if(Id.equals(gameStates[0].Id)){
             response = gameStates[1].shoot(fieldId);
-            isFinished = gameStates[1].myShips.getIsFinished();
+            isFinished = gameStates[1].myShips.getIsFinished(isFinished);
             gameStates[0].opponentGameField.field[fieldId] = response;
             gameField = gameStates[0].opponentGameField;
         } else {
             response = gameStates[0].shoot(fieldId);
-            isFinished = gameStates[0].myShips.getIsFinished();
+            isFinished = gameStates[0].myShips.getIsFinished(isFinished);
             gameStates[1].opponentGameField.field[fieldId] = response;
             gameField = gameStates[1].opponentGameField;
         }

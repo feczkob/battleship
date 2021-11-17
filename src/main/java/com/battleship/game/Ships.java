@@ -18,7 +18,10 @@ public class Ships {
         for (ArrayList<Integer> a: ships) {
             if(a.contains(field)){
                 a.remove(field);
-                if(a.isEmpty()) return GRIDSTATE.SUNKEN;
+                if(a.isEmpty()) {
+                    ships.remove(a);
+                    return GRIDSTATE.SUNKEN;
+                }
                 return GRIDSTATE.HIT;
             }
         }
@@ -27,9 +30,11 @@ public class Ships {
 
     /**
      * Get if the game is finished
+     * @param isFinished if the game finished in a result of the other player's shoot, then do not change the boolean
      * @return boolean
      */
-    public boolean getIsFinished(){
+    public boolean getIsFinished(boolean isFinished){
+        if(isFinished)  return true;
         return ships.isEmpty();
     }
 
@@ -51,23 +56,23 @@ public class Ships {
 
         // 5 pcs 2 sized
         shipsTmp.add(new ArrayList<>(Arrays.asList(0,1)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(3,4)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(6,7)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(20,21)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(23,24)));
-
-        // 4 pcs 3 sized
-        shipsTmp.add(new ArrayList<>(Arrays.asList(26,27,28)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(40,41,42)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(44,45,46)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(60,61,62)));
-
-        // 2 pcs 4 sized
-        shipsTmp.add(new ArrayList<>(Arrays.asList(64,65,66,67)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(80,81,82,83)));
-
-        // 1 pcs 5 sized
-        shipsTmp.add(new ArrayList<>(Arrays.asList(59,69,79,89,99)));
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(3,4)));
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(6,7)));
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(20,21)));
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(23,24)));
+//
+//        // 4 pcs 3 sized
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(26,27,28)));
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(40,41,42)));
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(44,45,46)));
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(60,61,62)));
+//
+//        // 2 pcs 4 sized
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(64,65,66,67)));
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(80,81,82,83)));
+//
+//        // 1 pcs 5 sized
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(59,69,79,89,99)));
         return shipsTmp;
     }
 

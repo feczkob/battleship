@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Game class
@@ -11,7 +12,7 @@ import java.util.Set;
 @Getter
 public class Game {
     GameLogic gameLogic;
-    private final Set<String> alreadyShot = new HashSet<>();
+    private final Set<String> alreadyShot = ConcurrentHashMap.newKeySet();
 
     /**
      * Constructor for multiplayer game
@@ -56,16 +57,13 @@ public class Game {
      */
     public GameField shoot(String Id, Integer fieldId){
         if(!Id.equals("robot") && !getOtherPlayer(Id).equals("robot")){
-            System.out.println("shoot::" + Id);
             synchronized (alreadyShot) {
                 if(alreadyShot.contains(Id))    throw new RuntimeException("multiple.shots");
                 alreadyShot.add(Id);
             }
-            System.out.println("shoot::" + Id);
             while (alreadyShot.size() != 2 || !alreadyShot.contains(gameLogic.getOtherPlayer(Id))) {
                 Thread.onSpinWait();
             }
-            System.out.println("shoot::" + Id);
             alreadyShot.clear();
         }
         return gameLogic.shoot(Id, fieldId);

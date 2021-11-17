@@ -1,6 +1,7 @@
 package com.battleship.controller;
 
 import com.battleship.game.GameField;
+import com.battleship.model.Leaderboard;
 import com.battleship.model.Room;
 import com.battleship.model.ShootResponseDTO;
 import com.battleship.model.User;
@@ -270,12 +271,12 @@ public class BattleshipController {
     @Operation(summary = "Get leaderboard ordered by games won", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ShootResponseDTO.class))}),
+                            schema = @Schema(implementation = User.class))}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/leaderboard/{opponent}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<User> getLeaderboardVsUser(@PathVariable String opponent){
+    public Leaderboard getLeaderboardVsUser(@PathVariable String opponent){
         return battleshipService.getLeaderboard(opponent);
     }
 }
