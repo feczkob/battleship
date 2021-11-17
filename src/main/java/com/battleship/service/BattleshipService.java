@@ -33,10 +33,8 @@ public class BattleshipService {
     private final Map<String, Game> games = new HashMap<>();
 
     /**
-     * Players with associated rooms
+     * Players with associated threads
      */
-    //private final Map<String, Room> rooms = new HashMap<>();
-
     private final Map<String, Thread> threads = new HashMap<>();
 
     /**
@@ -101,7 +99,7 @@ public class BattleshipService {
     /**
      * Create a room
      * @param userId owner of room
-     * @return initial state of the game field
+     * @return initial state of the game field or null if the player leaves
      */
     public GameField createRoom(String userId){
         Optional<User> userTmp = userRepository.findById(userId);
@@ -115,7 +113,6 @@ public class BattleshipService {
             try {
                 Thread.currentThread().wait();
             } catch (InterruptedException e){
-                //throw new RuntimeException("waiting.thread.interrupted");
                 return null;
             }
         }
@@ -251,25 +248,3 @@ public class BattleshipService {
         return shootResponseDTO;
     }
 }
-
-// createRoom
-//        rooms.put(userId, room);
-
-//        synchronized (rooms.get(userId)){
-//            try {
-//                threads.put(userId, Thread.currentThread());
-//                rooms.get(userId).wait();
-//            } catch (InterruptedException e){
-//                //throw new RuntimeException("waiting.thread.interrupted");
-//                return null;
-//            }
-//        }
-
-// play
-//                synchronized (rooms.get(roomUserId)){
-//                    rooms.get(roomUserId).notify();
-//                }
-//              rooms.remove(roomUserId);
-
-// leaveRoom
-//      rooms.remove(userId);
