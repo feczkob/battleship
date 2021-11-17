@@ -5,6 +5,7 @@ import com.battleship.model.Room;
 import com.battleship.model.ShootResponseDTO;
 import com.battleship.model.User;
 import com.battleship.service.BattleshipService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -40,7 +41,7 @@ public class BattleshipController {
      * @return user
      */
     @Schema(name = "findById",description = "Find user by Id and if not found create a new user")
-    @ApiResponses(value = {
+    @Operation(summary = "Find user by Id and if not found create a new user", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                 content = {@Content(mediaType = "application/json",
                         schema = @Schema(implementation = User.class))}),
@@ -57,7 +58,7 @@ public class BattleshipController {
      * @return list of users
      */
     @Schema(name = "findAll", description = "Find all users")
-    @ApiResponses(value = {
+    @Operation(summary = "Find all users", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = User.class))}),
@@ -75,7 +76,7 @@ public class BattleshipController {
      * @return user
      */
     @Schema(name = "addUser",description = "Add user - not used")
-    @ApiResponses(value = {
+    @Operation(summary = "Add user - not used", responses = {
             @ApiResponse(responseCode = "200", description = "Successful operation",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = User.class))}),
@@ -94,7 +95,7 @@ public class BattleshipController {
      * @return user
      */
     @Schema(name = "changeUsername",description = "Change username by Id")
-    @ApiResponses(value = {
+    @Operation(summary = "Change username by Id", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = User.class))}),
@@ -114,7 +115,7 @@ public class BattleshipController {
      * @return room
      */
     @Schema(name = "createRoom",description = "Create room for multi player game")
-    @ApiResponses(value = {
+    @Operation(summary = "Create room for multi player game", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = GameField.class))}),
@@ -131,7 +132,7 @@ public class BattleshipController {
      * @return list of rooms
      */
     @Schema(name = "getRooms",description = "Find all rooms")
-    @ApiResponses(value = {
+    @Operation(summary = "Find all rooms", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = Room.class))}),
@@ -148,7 +149,7 @@ public class BattleshipController {
      * @param userId owner of room
      */
     @Schema(name = "leaveRoom",description = "Leave room")
-    @ApiResponses(value = {
+    @Operation(summary = "Leave room", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
@@ -166,7 +167,7 @@ public class BattleshipController {
      * @return initial state of game field
      */
     @Schema(name = "playSinglePlayer", description = "Play single player game")
-    @ApiResponses(value = {
+    @Operation(summary = "Play single player game", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = GameField.class))}),
@@ -188,7 +189,7 @@ public class BattleshipController {
      * @return initial state of the game field
      */
     @Schema(name = "playMultiPlayer", description = "Play multi player game")
-    @ApiResponses(value = {
+    @Operation(summary = "Play multi player game", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = GameField.class))}),
@@ -209,7 +210,7 @@ public class BattleshipController {
      * @return new game field
      */
     @Schema(name = "getNewShipPositions", description = "Get new ship positions")
-    @ApiResponses(value = {
+    @Operation(summary = "Get new ship positions", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = GameField.class))}),
@@ -227,7 +228,7 @@ public class BattleshipController {
      * @return true
      */
     @Schema(name = "ready", description = "Ready")
-    @ApiResponses(value = {
+    @Operation(summary = "Ready", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
@@ -245,7 +246,7 @@ public class BattleshipController {
      * @return response with the outcomes
      */
     @Schema(name = "shoot",description = "Shoot to a specific field")
-    @ApiResponses(value = {
+    @Operation(summary = "Shoot to a specific field", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ShootResponseDTO.class))}),
