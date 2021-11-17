@@ -15,4 +15,6 @@ public interface UserRepository extends CrudRepository<User, String> {
     User save(User user);
     Optional<User> findById(String Id);
     List<User> findAll();
+    List<User> findAllByOrderByGamesWonVsUserDesc();
+    List<User> findAllByOrderByGamesWonVsAiDesc();
 }

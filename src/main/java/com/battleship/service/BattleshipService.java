@@ -243,8 +243,14 @@ public class BattleshipService {
                 }
             }
         }
-
-
         return shootResponseDTO;
+    }
+
+
+    public List<User> getLeaderboard(String opponent) {
+        if ("robot".equals(opponent)) {
+            return userRepository.findAllByOrderByGamesWonVsAiDesc();
+        }
+        return userRepository.findAllByOrderByGamesWonVsUserDesc();
     }
 }

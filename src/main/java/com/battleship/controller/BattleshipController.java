@@ -260,4 +260,22 @@ public class BattleshipController {
     ){
         return battleshipService.shoot(userId, fieldId);
     }
+
+    /**
+     * Get leaderboard ordered by games won
+     * @param opponent "user" or "robot"
+     * @return leaderboard
+     */
+    @Schema(name = "shoot",description = "Get leaderboard ordered by games won")
+    @Operation(summary = "Get leaderboard ordered by games won", responses = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ShootResponseDTO.class))}),
+            @ApiResponse(responseCode = "404", description = "Service not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @RequestMapping(path = "/leaderboard/{opponent}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<User> getLeaderboardVsUser(@PathVariable String opponent){
+        return battleshipService.getLeaderboard(opponent);
+    }
 }
