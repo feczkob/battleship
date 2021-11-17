@@ -98,19 +98,14 @@ public class GameLogic {
     }
 
     /**
-     * Unused function for game field with ships on it
+     * Get opponent's game field
      * @param Id Id of the player
      * @return resulting game field
      */
-    GameField myPerspective(String Id){
-        GameField myGameField;
-        if(Id.equals(gameStates[0].Id)){
-            myGameField = new GameField(gameStates[1].opponentGameField);
-            return placeShipsToField(myGameField, gameStates[0].myShips);
-        } else {
-            myGameField = new GameField(gameStates[0].opponentGameField);
-            return placeShipsToField(myGameField, gameStates[1].myShips);
-        }
+    public GameField getOpponentGameField(String Id) {
+        if(gameStates[0].Id.equals(Id))     return new GameField(gameStates[0].opponentGameField);
+
+        return new GameField(gameStates[1].opponentGameField);
     }
 
     /**
@@ -137,4 +132,21 @@ public class GameLogic {
                 "gameStates=" + Arrays.toString(gameStates) +
                 '}';
     }
+
+    /**
+     * Unused function for game field with ships on it
+     * @param Id Id of the player
+     * @return resulting game field
+     */
+    GameField myPerspective(String Id){
+        GameField myGameField;
+        if(Id.equals(gameStates[0].Id)){
+            myGameField = new GameField(gameStates[1].opponentGameField);
+            return placeShipsToField(myGameField, gameStates[0].myShips);
+        } else {
+            myGameField = new GameField(gameStates[0].opponentGameField);
+            return placeShipsToField(myGameField, gameStates[1].myShips);
+        }
+    }
+
 }

@@ -2,13 +2,18 @@ package com.battleship.game;
 
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * Game class
  */
 @Getter
 public class Game {
     GameLogic gameLogic;
-    private volatile Integer counter = 0;
+    private final Set<String> alreadyShot = new HashSet<>();
 
     /**
      * Constructor for multiplayer game
@@ -30,10 +35,19 @@ public class Game {
     /**
      * Get game field in the perspective of the player
      * @param Id Id of player
-     * @return game field
+     * @return player's game field
      */
     public GameField getGameField(String Id){
         return gameLogic.getGameField(Id);
+    }
+
+    /**
+     * Get opponent's game field in the perspective of the player
+     * @param Id Id of player
+     * @return opponent's game field
+     */
+    public GameField getOpponentGameField(String Id){
+        return gameLogic.getOpponentGameField(Id);
     }
 
     /**
@@ -44,13 +58,14 @@ public class Game {
      */
     public GameField shoot(String Id, Integer fieldId){
         if(!Id.equals("robot") && !getOtherPlayer(Id).equals("robot")){
-            synchronized (counter) {
-                counter = counter + 1;
+            synchronized (alreadyShot) {
+                if(alreadyShot.contains(Id))    throw new RuntimeException("multiple.shots");
+                alreadyShot.add(Id);
             }
-            while (counter != 2) {
+            while (alreadyShot.size() != 2 || !alreadyShot.contains(gameLogic.getOtherPlayer(Id))) {
                 Thread.onSpinWait();
             }
-            counter = 0;
+            alreadyShot.clear();
         }
         return gameLogic.shoot(Id, fieldId);
     }

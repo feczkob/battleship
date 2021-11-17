@@ -188,12 +188,21 @@ public class BattleshipService {
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
 
         shootResponseDTO.setPlayer1(userId);
-        shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
-        shootResponseDTO.setPlayer2(game.getOtherPlayer(userId));
+        try {
+            shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
+        } catch (RuntimeException e){
+            shootResponseDTO.setGameField2(game.getOpponentGameField(userId));
+            shootResponseDTO.setPlayer2(game.getOtherPlayer(userId));
+            shootResponseDTO.setGameField1(game.getGameField(userId));
+            return shootResponseDTO;
+        }
+
         if(game.getOtherPlayer(userId).equals("robot"))  {
             Integer field2 = Robot.shoot();
             game.shoot("robot", field2);
         }
+
+        shootResponseDTO.setPlayer2(game.getOtherPlayer(userId));
         shootResponseDTO.setGameField1(game.getGameField(userId));
         shootResponseDTO.setFinished(game.getIsFinished());
         shootResponseDTO.setWinner(game.getWinner());
