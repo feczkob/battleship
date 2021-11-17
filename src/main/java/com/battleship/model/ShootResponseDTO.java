@@ -1,7 +1,9 @@
 package com.battleship.model;
 
 import com.battleship.game.GameField;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * Response class that is sent to the clients

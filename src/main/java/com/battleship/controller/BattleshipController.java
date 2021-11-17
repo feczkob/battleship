@@ -1,6 +1,5 @@
 package com.battleship.controller;
 
-import com.battleship.game.GRIDSTATE;
 import com.battleship.game.GameField;
 import com.battleship.model.Room;
 import com.battleship.model.ShootResponseDTO;
