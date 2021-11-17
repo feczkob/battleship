@@ -127,6 +127,23 @@ public class BattleshipController {
     }
 
     /**
+     * Get the list of rooms
+     * @return list of rooms
+     */
+    @Schema(name = "getRooms",description = "Find all rooms")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Room.class))}),
+            @ApiResponse(responseCode = "404", description = "Service not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @RequestMapping(path = "/rooms", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Room> getRooms(){
+        return battleshipService.getRooms();
+    }
+
+    /**
      * Create a room
      * @param userId owner of room
      */
@@ -141,6 +158,7 @@ public class BattleshipController {
     public void leaveRoom(@RequestParam String userId){
         battleshipService.leaveRoom(userId);
     }
+
     /**
      * Play in single player game mode
      * @param opponent "robot"
@@ -186,20 +204,38 @@ public class BattleshipController {
     }
 
     /**
-     * Get the list of rooms
-     * @return list of rooms
+     * Get newly positioned ships
+     * @param userId Id of the player
+     * @return new game field
      */
-    @Schema(name = "getRooms",description = "Find all rooms")
+    @Schema(name = "getNewShipPositions", description = "Get new ship positions")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Room.class))}),
+                            schema = @Schema(implementation = GameField.class))}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @RequestMapping(path = "/rooms", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Room> getRooms(){
-        return battleshipService.getRooms();
+    @RequestMapping(path = "/play/getNewShipPositions", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public GameField getNewShipPositions(@RequestParam String userId){
+        return battleshipService.getNewShipPositions(userId);
+    }
+
+    /**
+     * Declare themselves ready for the game
+     * @param userId Id of the player
+     * @return true
+     */
+    @Schema(name = "ready", description = "Ready")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval",
+                    content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Service not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @RequestMapping(path = "/play/ready", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public boolean ready(@RequestParam String userId){
+        return battleshipService.ready(userId);
     }
 
     /**

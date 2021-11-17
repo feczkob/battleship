@@ -99,4 +99,13 @@ public class Game {
                 "gameLogic=" + gameLogic +
                 '}';
     }
+
+    /**
+     * Declare themselves ready for the game
+     * @param userId Id of the player
+     * @return true
+     */
+    public boolean ready(String userId) {
+        return true;
+    }
 }

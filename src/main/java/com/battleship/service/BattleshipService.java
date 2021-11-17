@@ -124,6 +124,14 @@ public class BattleshipService {
     }
 
     /**
+     * Get the list of rooms
+     * @return list of rooms
+     */
+    public List<Room> getRooms(){
+        return roomRepository.findAll();
+    }
+
+    /**
      * Delete a room
      * @param userId owner of room
      */
@@ -171,11 +179,22 @@ public class BattleshipService {
     }
 
     /**
-     * Get the list of rooms
-     * @return list of rooms
+     * Get newly positioned ships
+     * @param userId Id of the player
+     * @return new game field
      */
-    public List<Room> getRooms(){
-        return roomRepository.findAll();
+    public GameField getNewShipPositions(String userId) {
+        //TODO
+        return games.get(userId).getGameField(userId);
+    }
+
+    /**
+     * Declare themselves ready for the game
+     * @param userId Id of the player
+     * @return true
+     */
+    public boolean ready(String userId) {
+        return games.get(userId).ready(userId);
     }
 
     /**
@@ -212,7 +231,6 @@ public class BattleshipService {
 
         return shootResponseDTO;
     }
-
 }
 
 // createRoom
