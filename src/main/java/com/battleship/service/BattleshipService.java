@@ -226,8 +226,27 @@ public class BattleshipService {
 
         shootResponseDTO.setPlayer2(game.getOtherPlayer(userId));
         shootResponseDTO.setGameField1(game.getGameField(userId));
-        shootResponseDTO.setFinished(game.getIsFinished());
-        shootResponseDTO.setWinner(game.getWinner());
+        if(game.getIsFinished()){
+            Optional<User> userTmp = userRepository.findById(game.getWinner());
+            if(userTmp.isEmpty())  throw new RuntimeException("no.such.user");
+            shootResponseDTO.setFinished(game.getIsFinished());
+            shootResponseDTO.setWinner(game.getWinner());
+            if(game.getOtherPlayer(userId).equals("robot")){
+                userTmp.get().setGamesPlayedVsAi(userTmp.get().getGamesPlayedVsAi() + 1);
+                if(game.getWinner().equals(userId)) userTmp.get().setGamesWonVsAi(userTmp.get().getGamesWonVsAi() + 1);
+            } else {
+                userTmp.get().setGamesPlayedVsUser(userTmp.get().getGamesPlayedVsUser() + 1);
+                Optional<User> userTmp2 = userRepository.findById(game.getOtherPlayer(userId));
+                if(userTmp2.isEmpty())  throw new RuntimeException("no.such.user");
+                userTmp2.get().setGamesPlayedVsUser(userTmp2.get().getGamesPlayedVsUser() + 1);
+                if(game.getWinner().equals(userTmp.get().getId()))  {
+                    userTmp.get().setGamesWonVsUser(userTmp.get().getGamesWonVsUser() + 1);
+                } else {
+                    userTmp2.get().setGamesWonVsUser(userTmp.get().getGamesWonVsUser() + 1);
+                }
+            }
+        }
+
 
         return shootResponseDTO;
     }

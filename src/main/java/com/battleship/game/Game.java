@@ -56,13 +56,16 @@ public class Game {
      */
     public GameField shoot(String Id, Integer fieldId){
         if(!Id.equals("robot") && !getOtherPlayer(Id).equals("robot")){
+            System.out.println("shoot::" + Id);
             synchronized (alreadyShot) {
                 if(alreadyShot.contains(Id))    throw new RuntimeException("multiple.shots");
                 alreadyShot.add(Id);
             }
+            System.out.println("shoot::" + Id);
             while (alreadyShot.size() != 2 || !alreadyShot.contains(gameLogic.getOtherPlayer(Id))) {
                 Thread.onSpinWait();
             }
+            System.out.println("shoot::" + Id);
             alreadyShot.clear();
         }
         return gameLogic.shoot(Id, fieldId);
