@@ -39,4 +39,5 @@ public class GameField {
         }
         return stringBuilder.toString();
     }
+
 }

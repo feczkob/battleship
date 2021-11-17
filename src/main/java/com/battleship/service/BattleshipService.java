@@ -8,6 +8,7 @@ import com.battleship.model.ShootResponseDTO;
 import com.battleship.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -31,7 +32,9 @@ public class BattleshipService {
     /**
      * Players with associated rooms
      */
-    private final Map<String, Room> rooms = new HashMap<>();
+    //private final Map<String, Room> rooms = new HashMap<>();
+
+    private final Map<String, Thread> threads = new HashMap<>();
 
     /**
      * Injection of repositories
@@ -103,15 +106,17 @@ public class BattleshipService {
 
         Room room = new Room(userTmp.get().getId());
         roomRepository.save(room);
-        rooms.put(userId, room);
 
-        synchronized (rooms.get(userId)){
+        threads.put(userId, Thread.currentThread());
+        synchronized (Thread.currentThread()){
             try {
-                rooms.get(userId).wait();
+                Thread.currentThread().wait();
             } catch (InterruptedException e){
-                throw new RuntimeException("waiting.thread.interrupted");
+                //throw new RuntimeException("waiting.thread.interrupted");
+                return null;
             }
         }
+        threads.remove(userId);
         return games.get(userId).getGameField(userId);
     }
 
@@ -119,8 +124,11 @@ public class BattleshipService {
      * Delete a room
      * @param userId owner of room
      */
+    @Transactional
     public void leaveRoom(String userId) {
+        threads.get(userId).interrupt();
         roomRepository.deleteByUserId(userId);
+        threads.remove(userId);
     }
 
     /**
@@ -142,11 +150,12 @@ public class BattleshipService {
                 game = new Game(roomUserId, userId);
                 games.put(roomUserId, game);
                 games.put(userId, game);
-                synchronized (rooms.get(roomUserId)){
-                    rooms.get(roomUserId).notify();
+
+                synchronized (threads.get(roomUserId)){
+                    threads.get(roomUserId).notify();
                 }
                 roomRepository.deleteById(roomId);
-                rooms.remove(roomUserId);
+
                 break;
             case "robot":
                 game = new Game(userId);
@@ -193,3 +202,25 @@ public class BattleshipService {
     }
 
 }
+
+// createRoom
+//        rooms.put(userId, room);
+
+//        synchronized (rooms.get(userId)){
+//            try {
+//                threads.put(userId, Thread.currentThread());
+//                rooms.get(userId).wait();
+//            } catch (InterruptedException e){
+//                //throw new RuntimeException("waiting.thread.interrupted");
+//                return null;
+//            }
+//        }
+
+// play
+//                synchronized (rooms.get(roomUserId)){
+//                    rooms.get(roomUserId).notify();
+//                }
+//              rooms.remove(roomUserId);
+
+// leaveRoom
+//      rooms.remove(userId);
