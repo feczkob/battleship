@@ -3,7 +3,7 @@ package com.battleship.service;
 import com.battleship.game.Game;
 import com.battleship.game.GameField;
 import com.battleship.game.Robot;
-import com.battleship.model.Leaderboard;
+import com.battleship.model.LeaderboardDTO;
 import com.battleship.model.Room;
 import com.battleship.model.ShootResponseDTO;
 import com.battleship.model.User;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -250,10 +249,10 @@ public class BattleshipService {
     }
 
 
-    public Leaderboard getLeaderboard(String opponent) {
+    public LeaderboardDTO getLeaderboard(String opponent) {
         if ("robot".equals(opponent)) {
-            return new Leaderboard(userRepository.findAllByOrderByGamesWonVsAiDesc());
+            return new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsAiDesc());
         }
-        return new Leaderboard(userRepository.findAllByOrderByGamesWonVsUserDesc());
+        return new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsUserDesc());
     }
 }
