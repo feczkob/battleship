@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Leaderboard {
+public class LeaderboardDTO {
     private List<User> leaderboard;
 }

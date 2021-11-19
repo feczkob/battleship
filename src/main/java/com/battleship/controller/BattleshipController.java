@@ -1,7 +1,7 @@
 package com.battleship.controller;
 
 import com.battleship.game.GameField;
-import com.battleship.model.Leaderboard;
+import com.battleship.model.LeaderboardDTO;
 import com.battleship.model.Room;
 import com.battleship.model.ShootResponseDTO;
 import com.battleship.model.User;
@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -271,12 +270,12 @@ public class BattleshipController {
     @Operation(summary = "Get leaderboard ordered by games won", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Leaderboard.class))}),
+                            schema = @Schema(implementation = LeaderboardDTO.class))}),
             @ApiResponse(responseCode = "404", description = "Service not found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/leaderboard/{opponent}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Leaderboard getLeaderboardVsUser(@PathVariable String opponent){
+    public LeaderboardDTO getLeaderboardVsUser(@PathVariable String opponent){
         return battleshipService.getLeaderboard(opponent);
     }
 }
