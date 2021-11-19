@@ -84,41 +84,40 @@ public class GameLogic {
     // private
     public void changeHitToSunken(Integer fieldId, GameField gameField) {
         //TODO
-        List<Integer> neighbours = new ArrayList<>();
-//        if((fieldId - 10) % 10 >= 0) neighbours = IntStream.rangeClosed((fieldId - 10) % 10 == 0 ? fieldId - 10 : fieldId - 11,
-//                (fieldId - 10) % 9 == 0 ? fieldId - 10 : fieldId - 9).boxed().collect(Collectors.toList());
-        // left up
-        if(fieldId - 11 >= 0 && (fieldId) % 10 != 0) neighbours.add(fieldId - 11);
-        // up
-        if(fieldId - 10 >= 0)   neighbours.add(fieldId - 10);
-        // right up
-        if(fieldId - 9 > 0 && (fieldId + 1) % 10 != 0)  neighbours.add(fieldId - 9);
-        // left
-        if((fieldId - 1) > 0 && (fieldId - 1) % 10 != 9) neighbours.add(fieldId - 1);
-        // right
-        if((fieldId + 1) % 10 != 0) neighbours.add(fieldId + 1);
-        // left down
-        if((fieldId + 9) < 100 && (fieldId) % 10 != 0)  neighbours.add(fieldId + 9);
-        // down
-        if((fieldId + 10) < 100)    neighbours.add(fieldId + 10);
-        // right down
-        if((fieldId + 11) < 100 && (fieldId + 1) % 10 != 0) neighbours.add(fieldId + 11);
+        ArrayList<Integer> neighbours = getNeighbours(fieldId);
+        for (Integer field: neighbours) {
+            if(gameField.field[field] == GRIDSTATE.HIT) {
+                gameField.field[field] = GRIDSTATE.SUNKEN;
+                changeHitToSunken(field, gameField);
+            }
+        }
+    }
 
-        System.out.println(neighbours);
+    private ArrayList<Integer> getNeighbours(Integer fieldId){
+        ArrayList<Integer> neighbours = new ArrayList<>();
+        // up
+        if(fieldId - 10 >= 0) neighbours.add(fieldId - 10);
+        // left
+        if((fieldId) % 10 != 0)    neighbours.add(fieldId - 1);
+        // right
+        if((fieldId) % 10 != 9) neighbours.add(fieldId + 1);
+        // down
+        if(fieldId + 10 < 100)  neighbours.add(fieldId + 10);
+        return neighbours;
     }
 
     public static void main(String[] args) {
         GameField gameField = new GameField();
         GameLogic gameLogic = new GameLogic("asd", "asd2");
-//        gameLogic.changeHitToSunken(0, gameField);
-//        gameLogic.changeHitToSunken(5, gameField);
-//        gameLogic.changeHitToSunken(9, gameField);
-//        gameLogic.changeHitToSunken(10, gameField);
-//        gameLogic.changeHitToSunken(15, gameField);
-//        gameLogic.changeHitToSunken(19, gameField);
-//        gameLogic.changeHitToSunken(90, gameField);
-//        gameLogic.changeHitToSunken(95, gameField);
-//        gameLogic.changeHitToSunken(99, gameField);
+        gameLogic.changeHitToSunken(0, gameField);
+        gameLogic.changeHitToSunken(5, gameField);
+        gameLogic.changeHitToSunken(9, gameField);
+        gameLogic.changeHitToSunken(10, gameField);
+        gameLogic.changeHitToSunken(15, gameField);
+        gameLogic.changeHitToSunken(19, gameField);
+        gameLogic.changeHitToSunken(90, gameField);
+        gameLogic.changeHitToSunken(95, gameField);
+        gameLogic.changeHitToSunken(99, gameField);
     }
 
     /**
@@ -176,7 +175,7 @@ public class GameLogic {
      * @param Id Id of the player
      * @return resulting game field
      */
-    GameField myPerspective(String Id){
+    private GameField myPerspective(String Id){
         GameField myGameField;
         if(Id.equals(gameStates[0].Id)){
             myGameField = new GameField(gameStates[1].opponentGameField);
@@ -185,6 +184,32 @@ public class GameLogic {
             myGameField = new GameField(gameStates[0].opponentGameField);
             return placeShipsToField(myGameField, gameStates[1].myShips);
         }
+    }
+
+    /**
+     * Unused function for determining whole neighbourhood
+     * @param fieldId fieldId
+     * @return neighbours
+     */
+    private ArrayList<Integer> getWholeNeighbourhood(Integer fieldId){
+        ArrayList<Integer> neighbours = new ArrayList<>();
+        // up
+        if((fieldId - 10) >= 0){
+            if((fieldId) % 10 != 0) neighbours.add(fieldId - 11);
+            neighbours.add(fieldId - 10);
+            if((fieldId) % 10 != 9)  neighbours.add(fieldId - 9);
+        }
+        // left
+        if((fieldId) % 10 != 0) neighbours.add(fieldId - 1);
+        // right
+        if((fieldId) % 10 != 9) neighbours.add(fieldId + 1);
+        // down
+        if((fieldId + 10) < 100){
+            if((fieldId) % 10 != 0) neighbours.add(fieldId + 9);
+            neighbours.add(fieldId + 10);
+            if((fieldId) % 10 != 9) neighbours.add(fieldId + 11);
+        }
+        return neighbours;
     }
 
 }

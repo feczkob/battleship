@@ -54,8 +54,8 @@ public class Ships {
 
         // 5 pcs 2 sized
         shipsTmp.add(new ArrayList<>(Arrays.asList(0,1)));
-//        shipsTmp.add(new ArrayList<>(Arrays.asList(3,4)));
-//        shipsTmp.add(new ArrayList<>(Arrays.asList(6,7)));
+        shipsTmp.add(new ArrayList<>(Arrays.asList(3,4)));
+        shipsTmp.add(new ArrayList<>(Arrays.asList(6,7)));
 //        shipsTmp.add(new ArrayList<>(Arrays.asList(20,21)));
 //        shipsTmp.add(new ArrayList<>(Arrays.asList(23,24)));
 //
