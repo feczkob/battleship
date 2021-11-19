@@ -2,6 +2,9 @@ package com.battleship.game;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Class implementing the logic of the game
@@ -69,7 +72,7 @@ public class GameLogic {
             gameField = gameStates[1].opponentGameField;
         }
         isFinished = gameStates[0].myShips.getIsFinished() || gameStates[1].myShips.getIsFinished();
-        if(response == GRIDSTATE.SUNKEN)    changeHitToSunken(gameField);
+        if(response == GRIDSTATE.SUNKEN)    changeHitToSunken(fieldId, gameField);
         if(isFinished) winner = winner == null ? Id : winner;
         return gameField;
     }
@@ -78,8 +81,44 @@ public class GameLogic {
      * Change HIT positions to SUNKEN if the last field of a ship is hit
      * @param gameField resulting game field
      */
-    private void changeHitToSunken(GameField gameField) {
+    // private
+    public void changeHitToSunken(Integer fieldId, GameField gameField) {
         //TODO
+        List<Integer> neighbours = new ArrayList<>();
+//        if((fieldId - 10) % 10 >= 0) neighbours = IntStream.rangeClosed((fieldId - 10) % 10 == 0 ? fieldId - 10 : fieldId - 11,
+//                (fieldId - 10) % 9 == 0 ? fieldId - 10 : fieldId - 9).boxed().collect(Collectors.toList());
+        // left up
+        if(fieldId - 11 >= 0 && (fieldId) % 10 != 0) neighbours.add(fieldId - 11);
+        // up
+        if(fieldId - 10 >= 0)   neighbours.add(fieldId - 10);
+        // right up
+        if(fieldId - 9 > 0 && (fieldId + 1) % 10 != 0)  neighbours.add(fieldId - 9);
+        // left
+        if((fieldId - 1) > 0 && (fieldId - 1) % 10 != 9) neighbours.add(fieldId - 1);
+        // right
+        if((fieldId + 1) % 10 != 0) neighbours.add(fieldId + 1);
+        // left down
+        if((fieldId + 9) < 100 && (fieldId) % 10 != 0)  neighbours.add(fieldId + 9);
+        // down
+        if((fieldId + 10) < 100)    neighbours.add(fieldId + 10);
+        // right down
+        if((fieldId + 11) < 100 && (fieldId + 1) % 10 != 0) neighbours.add(fieldId + 11);
+
+        System.out.println(neighbours);
+    }
+
+    public static void main(String[] args) {
+        GameField gameField = new GameField();
+        GameLogic gameLogic = new GameLogic("asd", "asd2");
+//        gameLogic.changeHitToSunken(0, gameField);
+//        gameLogic.changeHitToSunken(5, gameField);
+//        gameLogic.changeHitToSunken(9, gameField);
+//        gameLogic.changeHitToSunken(10, gameField);
+//        gameLogic.changeHitToSunken(15, gameField);
+//        gameLogic.changeHitToSunken(19, gameField);
+//        gameLogic.changeHitToSunken(90, gameField);
+//        gameLogic.changeHitToSunken(95, gameField);
+//        gameLogic.changeHitToSunken(99, gameField);
     }
 
     /**
