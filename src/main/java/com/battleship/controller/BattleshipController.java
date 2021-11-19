@@ -275,7 +275,7 @@ public class BattleshipController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/leaderboard/{opponent}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public LeaderboardDTO getLeaderboardVsUser(@PathVariable String opponent){
+    public LeaderboardDTO getLeaderboard(@PathVariable String opponent){
         return battleshipService.getLeaderboard(opponent);
     }
 }
