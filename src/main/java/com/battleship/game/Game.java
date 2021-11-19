@@ -53,7 +53,7 @@ public class Game {
      * Shoot at a specific field
      * @param Id Id of the player
      * @param fieldId Id of the field
-     * @return resulting game field
+     * @return resulting game fields
      */
     public GameField shoot(String Id, Integer fieldId){
         if(!Id.equals("robot") && !getOtherPlayer(Id).equals("robot")){
@@ -104,9 +104,9 @@ public class Game {
     /**
      * Declare themselves ready for the game
      * @param userId Id of the player
-     * @return true
+     * @return initial game field
      */
-    public boolean ready(String userId) {
-        return true;
+    public GameField ready(String userId) {
+        return gameLogic.getGameField(userId);
     }
 }

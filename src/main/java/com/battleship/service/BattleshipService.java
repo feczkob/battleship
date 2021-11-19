@@ -192,8 +192,29 @@ public class BattleshipService {
      * @param userId Id of the player
      * @return true
      */
-    public boolean ready(String userId) {
-        return games.get(userId).ready(userId);
+    public ShootResponseDTO ready(String userId) {
+        Game game = games.get(userId);
+        threads.put(userId, Thread.currentThread());
+        ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
+        shootResponseDTO.setPlayer1(userId);
+        shootResponseDTO.setGameField1(game.ready(userId));
+        if (threads.get(game.getOtherPlayer(userId)) == null) {
+            synchronized (threads.get(userId)) {
+                try {
+                    Thread.currentThread().wait();
+                } catch (InterruptedException e) {
+                    return null;
+                }
+            }
+        } else {
+            synchronized (threads.get(game.getOtherPlayer(userId))){
+                threads.get(game.getOtherPlayer(userId)).notify();
+            }
+        }
+        shootResponseDTO.setGameField2(game.getOpponentGameField(userId));
+        shootResponseDTO.setPlayer2(game.getOtherPlayer(userId));
+        threads.remove(userId);
+        return shootResponseDTO;
     }
 
     /**
