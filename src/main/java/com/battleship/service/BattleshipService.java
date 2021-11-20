@@ -104,6 +104,7 @@ public class BattleshipService {
      * @return initial state of the game field or null if the player leaves
      */
     public GameField createRoom(String userId){
+        //System.out.println("service:createRoom::"+ userId);
         Optional<User> userTmp = userRepository.findById(userId);
         if (userTmp.isEmpty()) throw new RuntimeException("no.such.user");
 
@@ -149,6 +150,7 @@ public class BattleshipService {
      * @return initial state of the game field
      */
     public GameField play(String opponent, Long roomId, String userId){
+        //System.out.println("service:play::" + userId);
         Game game;
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         switch (opponent){
@@ -160,6 +162,8 @@ public class BattleshipService {
                 game = new Game(roomUserId, userId);
                 games.put(roomUserId, game);
                 games.put(userId, game);
+//                System.out.println(games.get(roomUserId) == games.get(userId));       // true
+//                System.out.println(games.get(roomUserId).equals(games.get(userId)));  // true
                 synchronized (threads.get(roomUserId)) {
                     threads.get(roomUserId).notify();
                 }
@@ -192,6 +196,7 @@ public class BattleshipService {
      * @return true
      */
     public ShootResponseDTO ready(String userId) {
+        System.out.println("service:ready::" + userId);
         Game game = games.get(userId);
         String opponent = game.getOtherPlayer(userId);
         threads.put(userId, Thread.currentThread());
@@ -224,6 +229,7 @@ public class BattleshipService {
      * @return response with the outcomes
      */
     public ShootResponseDTO shoot(String userId, int fieldId) {
+        System.out.println("service:shoot::"+userId);
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         Game game = games.get(userId);
         if(game == null) throw new RuntimeException("no.such.game");
@@ -232,9 +238,9 @@ public class BattleshipService {
 
         shootResponseDTO.setPlayer1(userId);
         try {
-            shootResponseDTO.setGameField2(Game.changeShipsToWater(game.shoot(userId, fieldId)));
+            shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
         } catch (RuntimeException e){
-            shootResponseDTO.setGameField2(Game.changeShipsToWater(game.getOpponentGameField(userId)));
+            shootResponseDTO.setGameField2(game.getOpponentGameField(userId));
             shootResponseDTO.setPlayer2(opponent);
             shootResponseDTO.setGameField1(game.getGameField(userId));
             return shootResponseDTO;
@@ -247,6 +253,8 @@ public class BattleshipService {
 
         shootResponseDTO.setPlayer2(opponent);
         shootResponseDTO.setGameField1(game.getGameField(userId));
+
+
         if(game.getIsFinished()){
             Optional<User> userTmp = userRepository.findById(game.getWinner());
             if(userTmp.isEmpty())  throw new RuntimeException("no.such.user");
@@ -267,7 +275,7 @@ public class BattleshipService {
                 }
             }
         }
-        game.clearAlreadyShot();
+        //game.clearAlreadyShot();
         return shootResponseDTO;
     }
 
