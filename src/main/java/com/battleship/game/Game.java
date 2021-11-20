@@ -1,5 +1,6 @@
 package com.battleship.game;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Game class
  */
 @Getter
+@EqualsAndHashCode
 public class Game {
     GameLogic gameLogic;
     private final Set<String> alreadyShot = ConcurrentHashMap.newKeySet();
@@ -29,6 +31,14 @@ public class Game {
      */
     public Game(String player1){
         gameLogic = new GameLogic(player1, "robot");
+    }
+
+    public Game(){
+        gameLogic = new GameLogic();
+    }
+
+    public void setId(String Id){
+        gameLogic.setId(Id);
     }
 
     /**
@@ -56,7 +66,7 @@ public class Game {
      * @return resulting game fields
      */
     public GameField shoot(String Id, Integer fieldId){
-        System.out.println("game shoot 1 :: " + gameLogic);
+        //System.out.println("game shoot 1 :: " + gameLogic);
         if(!Id.equals("robot") && !getOtherPlayer(Id).equals("robot")){
             synchronized (alreadyShot) {
                 if(alreadyShot.contains(Id))    throw new RuntimeException("multiple.shots");
@@ -67,7 +77,7 @@ public class Game {
             }
             alreadyShot.clear();
         }
-        System.out.println("game shoot 2 :: " + gameLogic);
+        //System.out.println("game shoot 2 :: " + gameLogic);
         return gameLogic.shoot(Id, fieldId);
     }
 

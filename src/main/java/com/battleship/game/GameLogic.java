@@ -1,5 +1,7 @@
 package com.battleship.game;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.stream.IntStream;
 /**
  * Class implementing the logic of the game
  */
+@EqualsAndHashCode
 public class GameLogic {
     /**
      * Game state object for each player
@@ -27,6 +30,18 @@ public class GameLogic {
         gameStates = new GameState[2];
         gameStates[0] = new GameState(player1);
         gameStates[1] = new GameState(player2);
+    }
+
+    public GameLogic(){
+        gameStates = new GameState[2];
+        gameStates[0] = new GameState();
+        gameStates[1] = new GameState();
+    }
+
+    void setId(String Id){
+        if(gameStates[0].getId() == null) {
+            gameStates[0].setId(Id);
+        } else gameStates[1].setId(Id);
     }
 
     /**
@@ -141,9 +156,9 @@ public class GameLogic {
     public GameField getOpponentGameField(String Id) {
         if(gameStates[0].Id.equals(Id)) {
             GameField gameField = new GameField(gameStates[0].opponentGameField);
-            System.out.println("gamelogic getopponentfield::" + gameField.equals(gameStates[0].opponentGameField));
-            System.out.println("again");
-            System.out.println(gameField == gameStates[0].opponentGameField);
+            //System.out.println("gamelogic getopponentfield::" + gameField.equals(gameStates[0].opponentGameField));
+            //System.out.println("again");
+            //System.out.println(gameField == gameStates[0].opponentGameField);
             return gameField;
         }
 

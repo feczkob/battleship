@@ -1,6 +1,7 @@
 package com.battleship.game;
 
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.Arrays;
@@ -9,6 +10,7 @@ import java.util.Arrays;
  * Game field class containing the 10x10 grids and their states
  */
 @Getter
+@EqualsAndHashCode
 public class GameField {
     volatile GRIDSTATE[] field = new GRIDSTATE[100];
 

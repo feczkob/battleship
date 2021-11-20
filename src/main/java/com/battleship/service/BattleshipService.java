@@ -32,12 +32,12 @@ public class BattleshipService {
      * Players with associated games
      * concurrent map
      */
-    private final Map<String, Game> games = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Game> games = new ConcurrentHashMap<>();
 
     /**
      * Players with associated threads
      */
-    private final Map<String, Thread> threads = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Thread> threads = new ConcurrentHashMap<>();
 
     /**
      * Injection of repositories
@@ -114,13 +114,13 @@ public class BattleshipService {
         synchronized (Thread.currentThread()){
             try {
                 Thread.currentThread().wait();
+                threads.remove(userId);
+                System.out.println(games.get(userId).hashCode());
+                return games.get(userId).getGameField(userId);
             } catch (InterruptedException e){
                 return null;
             }
         }
-        threads.remove(userId);
-        System.out.println("service createRoom :: " + games.get(userId));
-        return games.get(userId).getGameField(userId);
     }
 
     /**
@@ -149,9 +149,8 @@ public class BattleshipService {
      * @param userId user who joins the room or starts a single player game
      * @return initial state of the game field
      */
-    @Transactional
     public GameField play(String opponent, Long roomId, String userId){
-        Game game;
+        Game game = new Game();
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         switch (opponent){
             case "user":
@@ -159,23 +158,25 @@ public class BattleshipService {
                 if(room.isEmpty()) throw new RuntimeException("room.not.exist");
 
                 String roomUserId = room.get().getUserId();
-                game = new Game(roomUserId, userId);
+                //game = new Game(roomUserId, userId);
+                game.setId(roomUserId);
+                game.setId(userId);
                 games.put(roomUserId, game);
                 games.put(userId, game);
-
                 synchronized (threads.get(roomUserId)) {
-                    roomRepository.deleteById(roomId);
                     threads.get(roomUserId).notify();
                 }
-                break;
+                roomRepository.deleteById(roomId);
             case "robot":
-                game = new Game(userId);
+                game.setId(userId);
+                game.setId("robot");
                 games.put(userId, game);
+                System.out.println(games.get(userId));
                 break;
             default:
                 throw new RuntimeException("no.such.game.mode");
+
         }
-        System.out.println("service play :: " + games.get(userId));
         return game.getGameField(userId);
     }
 
@@ -229,7 +230,7 @@ public class BattleshipService {
     public ShootResponseDTO shoot(String userId, int fieldId) {
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         Game game = games.get(userId);
-        System.out.println("service shoot :: " + game);
+        System.out.println("service shoot 1 :: " + game);
         if(game == null) throw new RuntimeException("no.such.game");
         String opponent = game.getOtherPlayer(userId);
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
