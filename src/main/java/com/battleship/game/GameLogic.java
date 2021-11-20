@@ -64,13 +64,12 @@ public class GameLogic {
         GameField gameField;
         if(Id.equals(gameStates[0].Id)){
             response = gameStates[1].shoot(fieldId);
-            gameStates[0].opponentGameField.field[fieldId] = response;
             gameField = gameStates[0].opponentGameField;
         } else {
             response = gameStates[0].shoot(fieldId);
-            gameStates[1].opponentGameField.field[fieldId] = response;
             gameField = gameStates[1].opponentGameField;
         }
+        gameField.field[fieldId] = response;
         isFinished = gameStates[0].myShips.getIsFinished() || gameStates[1].myShips.getIsFinished();
         if(response == GRIDSTATE.SUNKEN)    changeHitToSunken(fieldId, gameField);
         if(isFinished) winner = winner == null ? Id : winner;
@@ -140,7 +139,13 @@ public class GameLogic {
      * @return resulting game field
      */
     public GameField getOpponentGameField(String Id) {
-        if(gameStates[0].Id.equals(Id))     return new GameField(gameStates[0].opponentGameField);
+        if(gameStates[0].Id.equals(Id)) {
+            GameField gameField = new GameField(gameStates[0].opponentGameField);
+            System.out.println("gamelogic getopponentfield::" + gameField.equals(gameStates[0].opponentGameField));
+            System.out.println("again");
+            System.out.println(gameField == gameStates[0].opponentGameField);
+            return gameField;
+        }
 
         return new GameField(gameStates[1].opponentGameField);
     }

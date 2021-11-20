@@ -119,6 +119,7 @@ public class BattleshipService {
             }
         }
         threads.remove(userId);
+        System.out.println("service createRoom :: " + games.get(userId));
         return games.get(userId).getGameField(userId);
     }
 
@@ -148,6 +149,7 @@ public class BattleshipService {
      * @param userId user who joins the room or starts a single player game
      * @return initial state of the game field
      */
+    @Transactional
     public GameField play(String opponent, Long roomId, String userId){
         Game game;
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
@@ -161,11 +163,10 @@ public class BattleshipService {
                 games.put(roomUserId, game);
                 games.put(userId, game);
 
-                synchronized (threads.get(roomUserId)){
+                synchronized (threads.get(roomUserId)) {
+                    roomRepository.deleteById(roomId);
                     threads.get(roomUserId).notify();
                 }
-                roomRepository.deleteById(roomId);
-
                 break;
             case "robot":
                 game = new Game(userId);
@@ -174,6 +175,7 @@ public class BattleshipService {
             default:
                 throw new RuntimeException("no.such.game.mode");
         }
+        System.out.println("service play :: " + games.get(userId));
         return game.getGameField(userId);
     }
 
@@ -194,11 +196,12 @@ public class BattleshipService {
      */
     public ShootResponseDTO ready(String userId) {
         Game game = games.get(userId);
+        String opponent = game.getOtherPlayer(userId);
         threads.put(userId, Thread.currentThread());
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
         shootResponseDTO.setPlayer1(userId);
         shootResponseDTO.setGameField1(game.ready(userId));
-        if (threads.get(game.getOtherPlayer(userId)) == null) {
+        if (threads.get(opponent) == null) {
             synchronized (threads.get(userId)) {
                 try {
                     Thread.currentThread().wait();
@@ -207,12 +210,12 @@ public class BattleshipService {
                 }
             }
         } else {
-            synchronized (threads.get(game.getOtherPlayer(userId))){
-                threads.get(game.getOtherPlayer(userId)).notify();
+            synchronized (threads.get(opponent)){
+                threads.get(opponent).notify();
             }
         }
         shootResponseDTO.setGameField2(game.getOpponentGameField(userId));
-        shootResponseDTO.setPlayer2(game.getOtherPlayer(userId));
+        shootResponseDTO.setPlayer2(opponent);
         threads.remove(userId);
         return shootResponseDTO;
     }
@@ -226,7 +229,9 @@ public class BattleshipService {
     public ShootResponseDTO shoot(String userId, int fieldId) {
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         Game game = games.get(userId);
+        System.out.println("service shoot :: " + game);
         if(game == null) throw new RuntimeException("no.such.game");
+        String opponent = game.getOtherPlayer(userId);
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
 
         shootResponseDTO.setPlayer1(userId);
@@ -234,7 +239,7 @@ public class BattleshipService {
             shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
         } catch (RuntimeException e){
             shootResponseDTO.setGameField2(game.getOpponentGameField(userId));
-            shootResponseDTO.setPlayer2(game.getOtherPlayer(userId));
+            shootResponseDTO.setPlayer2(opponent);
             shootResponseDTO.setGameField1(game.getGameField(userId));
             return shootResponseDTO;
         }
@@ -244,14 +249,14 @@ public class BattleshipService {
             game.shoot("robot", field2);
         }
 
-        shootResponseDTO.setPlayer2(game.getOtherPlayer(userId));
+        shootResponseDTO.setPlayer2(opponent);
         shootResponseDTO.setGameField1(game.getGameField(userId));
         if(game.getIsFinished()){
             Optional<User> userTmp = userRepository.findById(game.getWinner());
             if(userTmp.isEmpty())  throw new RuntimeException("no.such.user");
             shootResponseDTO.setFinished(game.getIsFinished());
             shootResponseDTO.setWinner(game.getWinner());
-            if(game.getOtherPlayer(userId).equals("robot")){
+            if(opponent.equals("robot")){
                 userTmp.get().setGamesPlayedVsAi(userTmp.get().getGamesPlayedVsAi() + 1);
                 if(game.getWinner().equals(userId)) userTmp.get().setGamesWonVsAi(userTmp.get().getGamesWonVsAi() + 1);
             } else {
