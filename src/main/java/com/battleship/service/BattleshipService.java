@@ -263,6 +263,7 @@ public class BattleshipService {
             if(opponent.equals("robot")){
                 userTmp.get().setGamesPlayedVsAi(userTmp.get().getGamesPlayedVsAi() + 1);
                 if(game.getWinner().equals(userId)) userTmp.get().setGamesWonVsAi(userTmp.get().getGamesWonVsAi() + 1);
+                userRepository.save(userTmp.get());
             } else {
                 userTmp.get().setGamesPlayedVsUser(userTmp.get().getGamesPlayedVsUser() + 1);
                 Optional<User> userTmp2 = userRepository.findById(game.getOtherPlayer(userId));
@@ -273,6 +274,8 @@ public class BattleshipService {
                 } else {
                     userTmp2.get().setGamesWonVsUser(userTmp.get().getGamesWonVsUser() + 1);
                 }
+                userRepository.save(userTmp.get());
+                userRepository.save(userTmp2.get());
             }
         }
         //game.clearAlreadyShot();

@@ -70,18 +70,19 @@ public class Game {
      */
     public GameField shoot(String Id, Integer fieldId){
         System.out.println("game:shoot::" + Id);
+        GameField gameField;
         if(!Id.equals("robot") && !getOtherPlayer(Id).equals("robot")){
             synchronized (alreadyShot) {
                 if(alreadyShot.contains(Id))    throw new RuntimeException("multiple.shots");
                 alreadyShot.add(Id);
             }
+            gameField = gameLogic.shoot(Id, fieldId);
             while (alreadyShot.size() != 2 || !alreadyShot.contains(gameLogic.getOtherPlayer(Id))) {
                 Thread.onSpinWait();
             }
-        }
+        } else gameField = gameLogic.shoot(Id, fieldId);
         alreadyShot.clear();
-        //return changeShipsToWater(gameLogic.shoot(Id, fieldId));
-        return gameLogic.shoot(Id, fieldId);
+        return gameField;
     }
 
     /**
