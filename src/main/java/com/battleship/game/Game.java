@@ -33,13 +33,13 @@ public class Game {
         gameLogic = new GameLogic(player1, "robot");
     }
 
-    public Game(){
-        gameLogic = new GameLogic();
-    }
-
-    public void setId(String Id){
-        gameLogic.setId(Id);
-    }
+//    public Game(){
+//        gameLogic = new GameLogic();
+//    }
+//
+//    public void setId(String Id){
+//        gameLogic.setId(Id);
+//    }
 
     /**
      * Get game field in the perspective of the player
@@ -56,7 +56,7 @@ public class Game {
      * @return opponent's game field
      */
     public GameField getOpponentGameField(String Id){
-        return gameLogic.getOpponentGameField(Id);
+        return changeShipsToWater(gameLogic.getOpponentGameField(Id));
     }
 
     /**
@@ -75,10 +75,8 @@ public class Game {
             while (alreadyShot.size() != 2 || !alreadyShot.contains(gameLogic.getOtherPlayer(Id))) {
                 Thread.onSpinWait();
             }
-            alreadyShot.clear();
         }
-        //System.out.println("game shoot 2 :: " + gameLogic);
-        return gameLogic.shoot(Id, fieldId);
+        return changeShipsToWater(gameLogic.shoot(Id, fieldId));
     }
 
     /**
@@ -120,5 +118,17 @@ public class Game {
      */
     public GameField ready(String userId) {
         return gameLogic.getGameField(userId);
+    }
+
+    public static GameField changeShipsToWater(GameField gameField){
+        GameField gameField1 = new GameField(gameField);
+        for(int i = 0; i < gameField1.field.length; i++){
+            if(gameField1.field[i] == GRIDSTATE.SHIP) gameField1.field[i] = GRIDSTATE.WATER;
+        }
+        return gameField1;
+    }
+
+    public void clearAlreadyShot(){
+        alreadyShot.clear();
     }
 }

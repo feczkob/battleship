@@ -4,9 +4,6 @@ import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Class implementing the logic of the game
@@ -32,17 +29,17 @@ public class GameLogic {
         gameStates[1] = new GameState(player2);
     }
 
-    public GameLogic(){
-        gameStates = new GameState[2];
-        gameStates[0] = new GameState();
-        gameStates[1] = new GameState();
-    }
+//    public GameLogic(){
+//        gameStates = new GameState[2];
+//        gameStates[0] = new GameState();
+//        gameStates[1] = new GameState();
+//    }
 
-    void setId(String Id){
-        if(gameStates[0].getId() == null) {
-            gameStates[0].setId(Id);
-        } else gameStates[1].setId(Id);
-    }
+//    void setId(String Id){
+//        if(gameStates[0].getId() == null) {
+//            gameStates[0].setId(Id);
+//        } else gameStates[1].setId(Id);
+//    }
 
     /**
      * Place ships into the game field
@@ -155,13 +152,8 @@ public class GameLogic {
      */
     public GameField getOpponentGameField(String Id) {
         if(gameStates[0].Id.equals(Id)) {
-            GameField gameField = new GameField(gameStates[0].opponentGameField);
-            //System.out.println("gamelogic getopponentfield::" + gameField.equals(gameStates[0].opponentGameField));
-            //System.out.println("again");
-            //System.out.println(gameField == gameStates[0].opponentGameField);
-            return gameField;
+            return new GameField(gameStates[0].opponentGameField);
         }
-
         return new GameField(gameStates[1].opponentGameField);
     }
 

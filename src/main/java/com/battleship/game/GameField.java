@@ -12,12 +12,13 @@ import java.util.Arrays;
 @Getter
 @EqualsAndHashCode
 public class GameField {
-    volatile GRIDSTATE[] field = new GRIDSTATE[100];
+    volatile GRIDSTATE[] field;
 
     /**
      * Constructor
      */
     public GameField() {
+        field = new GRIDSTATE[100];
         Arrays.fill(field, GRIDSTATE.WATER);
     }
 
@@ -26,6 +27,7 @@ public class GameField {
      * @param gameField game field to be copied
      */
     public GameField(GameField gameField){
+        field = new GRIDSTATE[100];
         this.field = gameField.field;
     }
 
