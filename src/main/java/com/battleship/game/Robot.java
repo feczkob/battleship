@@ -3,6 +3,7 @@ package com.battleship.game;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -13,21 +14,34 @@ public class Robot {
     /**
      * List if fields that have been already shot at
      */
-    private static final ArrayList<Integer> fields = new ArrayList<>();
-    private static final Random random = new Random();
-    private static final String Id = "robot";
+    private final HashMap<Integer, GRIDSTATE> responses = new HashMap<>();
+    private final Random random = new Random();
+    private final String Id = "robot";
+    private Game game = null;
+
+    public Robot(Game game){
+        this.game = game;
+    }
 
     /**
-     * Shoot at a random field
-     * @return Id of the field
+     * Shoot at a random field and save the response
      */
-    public static Integer shoot(){
-        Integer field = random.nextInt(100);
+    public void shoot(){
+        Integer field = nextFieldToBeShotAt();
+        GRIDSTATE response = game.shoot(Id, field).field[field];
+        responses.put(field, response);
+    }
 
-        while(fields.contains(field)){
+    /**
+     * Calculate field to be shot at based on previous shots
+     * @return next field
+     */
+    private Integer nextFieldToBeShotAt(){
+        int field = random.nextInt(100);
+
+        while(responses.containsKey(field)){
             field = random.nextInt(100);
         }
-        fields.add(field);
         return field;
     }
 
