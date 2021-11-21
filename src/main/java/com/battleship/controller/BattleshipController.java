@@ -143,6 +143,22 @@ public class BattleshipController {
     }
 
     /**
+     * Leave game
+     * @param userId Id of the player
+     */
+    @Schema(name = "leaveGame",description = "Leave game")
+    @Operation(summary = "Leave room", responses = {
+            @ApiResponse(responseCode = "200", description = "Successful retrieval",
+                    content = {@Content(mediaType = "application/json")}),
+            @ApiResponse(responseCode = "404", description = "Service not found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
+    @RequestMapping(path = "/leaveGame", method = RequestMethod.DELETE)
+    public void leaveGame(@RequestParam String userId){
+        battleshipService.leaveGame(userId);
+    }
+
+    /**
      * Play in single player game mode
      * @param opponent "robot"
      * @param userId Id of the player

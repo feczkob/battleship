@@ -3,6 +3,7 @@ package com.battleship.game;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @EqualsAndHashCode
 public class Game {
     GameLogic gameLogic;
+    ArrayList<String> left = new ArrayList<>();
 
     /**
      * Constructor for multiplayer game
@@ -105,4 +107,11 @@ public class Game {
         return gameLogic.getGameField(userId);
     }
 
+    public void setLeft(String userId) {
+        left.add(userId);
+    }
+
+    public ArrayList<String> getLeft() {
+        return left;
+    }
 }

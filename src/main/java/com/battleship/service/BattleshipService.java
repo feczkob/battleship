@@ -141,6 +141,14 @@ public class BattleshipService {
         threads.remove(userId);
     }
 
+    public void leaveGame(String userId) {
+        Game game = games.get(userId);
+        threads.remove(userId);
+        if(threads.get(game.getOtherPlayer(userId)) != null)    threads.get(game.getOtherPlayer(userId)).interrupt();
+        threads.remove(game.getOtherPlayer(userId));
+        game.setLeft(userId);
+    }
+
     /**
      * Start a game
      * @param opponent "user" or "robot"
@@ -197,7 +205,10 @@ public class BattleshipService {
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
         shootResponseDTO.setPlayer1(userId);
         shootResponseDTO.setPlayer2(opponent);
-        shootResponseDTO.setGameField1(game.ready(userId));
+
+        // if the opponent left before I called ready
+        if(game.getLeft().contains(opponent)) return getShootResponseDTOWhenPlayerLeft(userId, opponent, shootResponseDTO);
+
 
         if(!opponent.equals("robot")) {
             threads.put(userId, Thread.currentThread());
@@ -206,7 +217,8 @@ public class BattleshipService {
                     try {
                         Thread.currentThread().wait();
                     } catch (InterruptedException e) {
-                        return null;
+                        // if the opponent left while I was waiting for them
+                        return getShootResponseDTOWhenPlayerLeft(userId, opponent, shootResponseDTO);
                     }
                 }
             } else {
@@ -216,8 +228,24 @@ public class BattleshipService {
             }
             threads.remove(userId);
         }
+        shootResponseDTO.setGameField1(game.ready(userId));
         shootResponseDTO.setGameField2(game.getOpponentGameField(userId));
 
+        return shootResponseDTO;
+    }
+
+    private ShootResponseDTO getShootResponseDTOWhenPlayerLeft(String userId, String opponent, ShootResponseDTO shootResponseDTO) {
+        shootResponseDTO.setWinner(userId);
+        shootResponseDTO.setFinished(true);
+        Optional<User> user1 = userRepository.findById(userId);
+        user1.ifPresent(user -> user.setGamesPlayedVsUser(user.getGamesPlayedVsUser() + 1));
+        user1.ifPresent(user -> user.setGamesWonVsUser(user.getGamesWonVsUser() + 1));
+        user1.ifPresent(userRepository::save);
+        Optional<User> user2 = userRepository.findById(opponent);
+        user2.ifPresent(user -> user.setGamesPlayedVsUser(user.getGamesPlayedVsUser() + 1));
+        user2.ifPresent(userRepository::save);
+        games.remove(games.get(userId).getOtherPlayer(userId));
+        games.remove(userId);
         return shootResponseDTO;
     }
 
@@ -237,6 +265,9 @@ public class BattleshipService {
         shootResponseDTO.setPlayer1(userId);
         shootResponseDTO.setPlayer2(opponent);
 
+        // if the opponent left before I called shoot
+        if(game.getLeft().contains(opponent)) return getShootResponseDTOWhenPlayerLeft(userId, opponent, shootResponseDTO);
+
         if(game.getOtherPlayer(userId).equals("robot"))  {
             Integer field2 = Robot.shoot();
             game.shoot("robot", field2);
@@ -255,7 +286,8 @@ public class BattleshipService {
                     try {
                         Thread.currentThread().wait();
                     } catch (InterruptedException e) {
-                        return null;
+                        // if the opponent left while I was waiting for them
+                        return getShootResponseDTOWhenPlayerLeft(userId, opponent, shootResponseDTO);
                     }
                 }
             } else {
@@ -293,4 +325,5 @@ public class BattleshipService {
         return "robot".equals(opponent) ? new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsAiDesc()) :
                 new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsUserDesc());
     }
+
 }
