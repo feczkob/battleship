@@ -194,27 +194,30 @@ public class BattleshipService {
     public ShootResponseDTO ready(String userId) {
         Game game = games.get(userId);
         String opponent = game.getOtherPlayer(userId);
-        threads.put(userId, Thread.currentThread());
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
         shootResponseDTO.setPlayer1(userId);
         shootResponseDTO.setPlayer2(opponent);
         shootResponseDTO.setGameField1(game.ready(userId));
-        if (threads.get(opponent) == null) {
-            synchronized (threads.get(userId)) {
-                try {
-                    Thread.currentThread().wait();
-                } catch (InterruptedException e) {
-                    return null;
+
+        if(!opponent.equals("robot")) {
+            threads.put(userId, Thread.currentThread());
+            if (threads.get(opponent) == null) {
+                synchronized (threads.get(userId)) {
+                    try {
+                        Thread.currentThread().wait();
+                    } catch (InterruptedException e) {
+                        return null;
+                    }
+                }
+            } else {
+                synchronized (threads.get(opponent)) {
+                    threads.get(opponent).notify();
                 }
             }
-        } else {
-            synchronized (threads.get(opponent)){
-                threads.get(opponent).notify();
-            }
+            threads.remove(userId);
         }
         shootResponseDTO.setGameField2(game.getOpponentGameField(userId));
 
-        threads.remove(userId);
         return shootResponseDTO;
     }
 
