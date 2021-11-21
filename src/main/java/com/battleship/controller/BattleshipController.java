@@ -147,7 +147,7 @@ public class BattleshipController {
      * @param userId Id of the player
      */
     @Schema(name = "leaveGame",description = "Leave game")
-    @Operation(summary = "Leave room", responses = {
+    @Operation(summary = "Leave game", responses = {
             @ApiResponse(responseCode = "200", description = "Successful retrieval",
                     content = {@Content(mediaType = "application/json")}),
             @ApiResponse(responseCode = "404", description = "Service not found"),

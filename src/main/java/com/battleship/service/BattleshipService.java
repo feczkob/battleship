@@ -141,6 +141,10 @@ public class BattleshipService {
         threads.remove(userId);
     }
 
+    /**
+     * Leave a game
+     * @param userId user who leaves
+     */
     public void leaveGame(String userId) {
         Game game = games.get(userId);
         threads.remove(userId);
