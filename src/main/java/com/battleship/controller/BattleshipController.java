@@ -235,7 +235,7 @@ public class BattleshipController {
             @ApiResponse(responseCode = "500", description = "Server error")
     })
     @RequestMapping(path = "/play/ready", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public boolean ready(@RequestParam String userId){
+    public ShootResponseDTO ready(@RequestParam String userId){
         return battleshipService.ready(userId);
     }
 

@@ -1,11 +1,14 @@
 package com.battleship.game;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * Ships class containing the positions of the player's ships
  */
+@EqualsAndHashCode
 public class Ships {
     volatile ArrayList<ArrayList<Integer>>   ships;
 
@@ -54,8 +57,8 @@ public class Ships {
 
         // 5 pcs 2 sized
         shipsTmp.add(new ArrayList<>(Arrays.asList(0,1)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(3,4)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(6,7)));
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(3,4)));
+//        shipsTmp.add(new ArrayList<>(Arrays.asList(6,7)));
 //        shipsTmp.add(new ArrayList<>(Arrays.asList(20,21)));
 //        shipsTmp.add(new ArrayList<>(Arrays.asList(23,24)));
 //

@@ -1,14 +1,14 @@
 package com.battleship.game;
 
+import lombok.EqualsAndHashCode;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * Class implementing the logic of the game
  */
+@EqualsAndHashCode
 public class GameLogic {
     /**
      * Game state object for each player
@@ -24,6 +24,7 @@ public class GameLogic {
      * @param player2 Id of player2
      */
     public GameLogic(String player1, String player2){
+        //System.out.println("gamelogic:constructor");
         gameStates = new GameState[2];
         gameStates[0] = new GameState(player1);
         gameStates[1] = new GameState(player2);
@@ -36,6 +37,7 @@ public class GameLogic {
      * @return game field with ships
      */
     private GameField placeShipsToField(GameField gameField, Ships ships){
+        //System.out.println("gamelogic:placeshipstofield");
         for (ArrayList<Integer> a: ships.ships) {
             for (Integer pos: a) {
                 gameField.field[pos] = GRIDSTATE.SHIP;
@@ -59,18 +61,13 @@ public class GameLogic {
      * @return resulting game field
      */
     GameField shoot(String Id, Integer fieldId){
+        //System.out.println("gamelogic:shoot::" + Id);
         GRIDSTATE response;
         // opponent's gameField in my perspective
         GameField gameField;
-        if(Id.equals(gameStates[0].Id)){
-            response = gameStates[1].shoot(fieldId);
-            gameStates[0].opponentGameField.field[fieldId] = response;
-            gameField = gameStates[0].opponentGameField;
-        } else {
-            response = gameStates[0].shoot(fieldId);
-            gameStates[1].opponentGameField.field[fieldId] = response;
-            gameField = gameStates[1].opponentGameField;
-        }
+        response = Id.equals(gameStates[0].Id) ? gameStates[1].shoot(fieldId) : gameStates[0].shoot(fieldId);
+        gameField = Id.equals(gameStates[0].Id) ? gameStates[0].opponentGameField : gameStates[1].opponentGameField;
+        gameField.field[fieldId] = response;
         isFinished = gameStates[0].myShips.getIsFinished() || gameStates[1].myShips.getIsFinished();
         if(response == GRIDSTATE.SUNKEN)    changeHitToSunken(fieldId, gameField);
         if(isFinished) winner = winner == null ? Id : winner;
@@ -81,8 +78,7 @@ public class GameLogic {
      * Change HIT positions to SUNKEN if the last field of a ship is hit
      * @param gameField resulting game field
      */
-    // private
-    public void changeHitToSunken(Integer fieldId, GameField gameField) {
+    private void changeHitToSunken(Integer fieldId, GameField gameField) {
         //TODO
         ArrayList<Integer> neighbours = getNeighbours(fieldId);
         for (Integer field: neighbours) {
@@ -93,6 +89,11 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Get neighbourhood of field
+     * @param fieldId Id of field
+     * @return neighbourhood
+     */
     private ArrayList<Integer> getNeighbours(Integer fieldId){
         ArrayList<Integer> neighbours = new ArrayList<>();
         // up
@@ -126,12 +127,9 @@ public class GameLogic {
      * @return resulting game field
      */
     public GameField getGameField(String Id) {
-        GameField myGameField;
-        if(gameStates[0].Id.equals(Id)) {
-            myGameField = placeShipsToField(new GameField(gameStates[1].opponentGameField), gameStates[0].myShips);
-        } else myGameField = placeShipsToField(new GameField(gameStates[0].opponentGameField), gameStates[1].myShips);
-
-        return myGameField;
+        //System.out.println("gamelogic:getgamefield::" + Id);
+        return gameStates[0].Id.equals(Id) ? placeShipsToField(new GameField(gameStates[1].opponentGameField.field), gameStates[0].myShips) :
+                placeShipsToField(new GameField(gameStates[0].opponentGameField.field), gameStates[1].myShips);
     }
 
     /**
@@ -140,9 +138,9 @@ public class GameLogic {
      * @return resulting game field
      */
     public GameField getOpponentGameField(String Id) {
-        if(gameStates[0].Id.equals(Id))     return new GameField(gameStates[0].opponentGameField);
-
-        return new GameField(gameStates[1].opponentGameField);
+        //System.out.println("gamelogic:getopponentgamefield::" + Id);
+        return gameStates[0].Id.equals(Id) ? gameStates[0].opponentGameField :
+                gameStates[1].opponentGameField;
     }
 
     /**
@@ -151,8 +149,8 @@ public class GameLogic {
      * @return Id of the other player
      */
     public String getOtherPlayer(String Id) {
-        if(gameStates[0].Id.equals(Id)) return gameStates[1].Id;
-        return gameStates[0].Id;
+        //System.out.println("gamelogic:getotherplayer::" + Id);
+        return gameStates[0].Id.equals(Id) ? gameStates[1].Id : gameStates[0].Id;
     }
 
     /**

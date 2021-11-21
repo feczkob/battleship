@@ -1,9 +1,12 @@
 package com.battleship.game;
 
+import lombok.EqualsAndHashCode;
+
 /**
  * Game state class
  * contains the player's ships and the knowledge of the other player's field
  */
+@EqualsAndHashCode
 public class GameState {
     volatile GameField opponentGameField;
     volatile Ships myShips;
