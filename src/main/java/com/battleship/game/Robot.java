@@ -49,7 +49,7 @@ public class Robot {
             }
         });
 
-        while(responses.containsKey(Integer.valueOf(String.valueOf(returnField)))){
+        while(responses.containsKey(returnField.get())){
             returnField.set(random.nextInt(100));
         }
         return returnField.get();
