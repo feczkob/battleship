@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Robot class for single player game
@@ -27,7 +28,7 @@ public class Robot {
      * Shoot at a random field and save the response
      */
     public void shoot(){
-        Integer field = nextFieldToBeShotAt();
+        Integer field = nextFieldToBeShootAt();
         GRIDSTATE response = game.shoot(Id, field).field[field];
         responses.put(field, response);
     }
@@ -36,13 +37,22 @@ public class Robot {
      * Calculate field to be shot at based on previous shots
      * @return next field
      */
-    private Integer nextFieldToBeShotAt(){
-        int field = random.nextInt(100);
+    private Integer nextFieldToBeShootAt(){
+        AtomicInteger returnField = new AtomicInteger(random.nextInt(100));
+        responses.forEach((field, response) -> {
+            if(response == GRIDSTATE.HIT){
+                ArrayList<Integer> neighbours = GameLogic.getNeighbours(field);
+                neighbours.forEach(neighbour -> {
+                    if(responses.containsKey(neighbour)) neighbours.remove(neighbour);
+                });
+                if(!neighbours.isEmpty()) returnField.set(neighbours.get(0));
+            }
+        });
 
-        while(responses.containsKey(field)){
-            field = random.nextInt(100);
+        while(responses.containsKey(Integer.valueOf(String.valueOf(returnField)))){
+            returnField.set(random.nextInt(100));
         }
-        return field;
+        return returnField.get();
     }
 
     /**
@@ -52,4 +62,6 @@ public class Robot {
     public String getId() {
         return Id;
     }
+
+
 }
