@@ -162,8 +162,6 @@ public class BattleshipService {
                 game = new Game(roomUserId, userId);
                 games.put(roomUserId, game);
                 games.put(userId, game);
-//                System.out.println(games.get(roomUserId) == games.get(userId));       // true
-//                System.out.println(games.get(roomUserId).equals(games.get(userId)));  // true
                 synchronized (threads.get(roomUserId)) {
                     threads.get(roomUserId).notify();
                 }
@@ -196,7 +194,7 @@ public class BattleshipService {
      * @return true
      */
     public ShootResponseDTO ready(String userId) {
-        System.out.println("service:ready::" + userId);
+        //System.out.println("service:ready::" + userId);
         Game game = games.get(userId);
         String opponent = game.getOtherPlayer(userId);
         threads.put(userId, Thread.currentThread());
@@ -230,7 +228,7 @@ public class BattleshipService {
      * @return response with the outcomes
      */
     public ShootResponseDTO shoot(String userId, int fieldId) {
-        System.out.println("service:shoot::"+userId);
+        //System.out.println("service:shoot::"+userId);
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         Game game = games.get(userId);
         if(game == null) throw new RuntimeException("no.such.game");

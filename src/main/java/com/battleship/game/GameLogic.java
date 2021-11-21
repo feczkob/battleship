@@ -37,7 +37,7 @@ public class GameLogic {
      * @return game field with ships
      */
     private GameField placeShipsToField(GameField gameField, Ships ships){
-        System.out.println("gamelogic:placeshipstofield");
+        //System.out.println("gamelogic:placeshipstofield");
         for (ArrayList<Integer> a: ships.ships) {
             for (Integer pos: a) {
                 gameField.field[pos] = GRIDSTATE.SHIP;
@@ -61,17 +61,10 @@ public class GameLogic {
      * @return resulting game field
      */
     GameField shoot(String Id, Integer fieldId){
-        System.out.println("gamelogic:shoot::" + Id);
+        //System.out.println("gamelogic:shoot::" + Id);
         GRIDSTATE response;
         // opponent's gameField in my perspective
         GameField gameField;
-//        if(Id.equals(gameStates[0].Id)){
-//            response = gameStates[1].shoot(fieldId);
-//            gameField = gameStates[0].opponentGameField;
-//        } else {
-//            response = gameStates[0].shoot(fieldId);
-//            gameField = gameStates[1].opponentGameField;
-//        }
         response = Id.equals(gameStates[0].Id) ? gameStates[1].shoot(fieldId) : gameStates[0].shoot(fieldId);
         gameField = Id.equals(gameStates[0].Id) ? gameStates[0].opponentGameField : gameStates[1].opponentGameField;
         gameField.field[fieldId] = response;
@@ -134,7 +127,7 @@ public class GameLogic {
      * @return resulting game field
      */
     public GameField getGameField(String Id) {
-        System.out.println("gamelogic:getgamefield::" + Id);
+        //System.out.println("gamelogic:getgamefield::" + Id);
         return gameStates[0].Id.equals(Id) ? placeShipsToField(new GameField(gameStates[1].opponentGameField.field), gameStates[0].myShips) :
                 placeShipsToField(new GameField(gameStates[0].opponentGameField.field), gameStates[1].myShips);
     }
@@ -145,11 +138,7 @@ public class GameLogic {
      * @return resulting game field
      */
     public GameField getOpponentGameField(String Id) {
-        System.out.println("gamelogic:getopponentgamefield::" + Id);
-//        if(gameStates[0].Id.equals(Id)) {
-//            return new GameField(gameStates[0].opponentGameField);
-//        }
-//        return new GameField(gameStates[1].opponentGameField);
+        //System.out.println("gamelogic:getopponentgamefield::" + Id);
         return gameStates[0].Id.equals(Id) ? gameStates[0].opponentGameField :
                 gameStates[1].opponentGameField;
     }
@@ -160,7 +149,7 @@ public class GameLogic {
      * @return Id of the other player
      */
     public String getOtherPlayer(String Id) {
-        System.out.println("gamelogic:getotherplayer::" + Id);
+        //System.out.println("gamelogic:getotherplayer::" + Id);
         return gameStates[0].Id.equals(Id) ? gameStates[1].Id : gameStates[0].Id;
     }
 

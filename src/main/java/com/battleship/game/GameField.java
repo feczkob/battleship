@@ -35,7 +35,7 @@ public class GameField {
      * @param that instance to be copied
      */
     GameField(GRIDSTATE[] that){
-        System.out.println("gamefield:gridstateconstructor");
+        //System.out.println("gamefield:gridstateconstructor");
         field = new GRIDSTATE[that.length];
         System.arraycopy(that, 0, field, 0, that.length);
     }
