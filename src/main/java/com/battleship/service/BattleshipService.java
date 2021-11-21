@@ -281,6 +281,7 @@ public class BattleshipService {
             } else {
                 userTmp.get().setGamesPlayedVsUser(userTmp.get().getGamesPlayedVsUser() + 1);
                 if(game.getWinner().equals(userTmp.get().getId()))  userTmp.get().setGamesWonVsUser(userTmp.get().getGamesWonVsUser() + 1);
+                games.remove(userId);
             }
             userRepository.save(userTmp.get());
         }
