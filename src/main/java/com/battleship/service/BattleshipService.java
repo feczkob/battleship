@@ -202,6 +202,7 @@ public class BattleshipService {
         threads.put(userId, Thread.currentThread());
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
         shootResponseDTO.setPlayer1(userId);
+        shootResponseDTO.setPlayer2(opponent);
         shootResponseDTO.setGameField1(game.ready(userId));
         if (threads.get(opponent) == null) {
             synchronized (threads.get(userId)) {
@@ -217,7 +218,7 @@ public class BattleshipService {
             }
         }
         shootResponseDTO.setGameField2(game.getOpponentGameField(userId));
-        shootResponseDTO.setPlayer2(opponent);
+
         threads.remove(userId);
         return shootResponseDTO;
     }
@@ -233,60 +234,65 @@ public class BattleshipService {
         if(userRepository.findById(userId).isEmpty()) throw new RuntimeException("no.such.user");
         Game game = games.get(userId);
         if(game == null) throw new RuntimeException("no.such.game");
+
         String opponent = game.getOtherPlayer(userId);
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
-
         shootResponseDTO.setPlayer1(userId);
-        try {
-            shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
-        } catch (RuntimeException e){
-            shootResponseDTO.setGameField2(game.getOpponentGameField(userId));
-            shootResponseDTO.setPlayer2(opponent);
-            shootResponseDTO.setGameField1(game.getGameField(userId));
-            return shootResponseDTO;
-        }
+        shootResponseDTO.setPlayer2(opponent);
 
         if(game.getOtherPlayer(userId).equals("robot"))  {
             Integer field2 = Robot.shoot();
             game.shoot("robot", field2);
+            shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
+        } else {
+            if (threads.get(opponent) == null) {
+                if (threads.get(userId) != null) {
+                    // multiple shots
+                    shootResponseDTO.setGameField2(game.getOpponentGameField(userId));
+                    shootResponseDTO.setGameField1(game.getGameField(userId));
+                    return shootResponseDTO;
+                }
+                threads.put(userId, Thread.currentThread());
+                synchronized (Thread.currentThread()) {
+                    shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
+                    try {
+                        Thread.currentThread().wait();
+                    } catch (InterruptedException e) {
+                        return null;
+                    }
+                }
+            } else {
+                synchronized (threads.get(opponent)) {
+                    shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
+                    threads.get(opponent).notify();
+                    threads.remove(opponent);
+                }
+            }
         }
 
-        shootResponseDTO.setPlayer2(opponent);
         shootResponseDTO.setGameField1(game.getGameField(userId));
 
 
         if(game.getIsFinished()){
-            Optional<User> userTmp = userRepository.findById(game.getWinner());
+            Optional<User> userTmp = userRepository.findById(userId);
             if(userTmp.isEmpty())  throw new RuntimeException("no.such.user");
             shootResponseDTO.setFinished(game.getIsFinished());
             shootResponseDTO.setWinner(game.getWinner());
             if(opponent.equals("robot")){
                 userTmp.get().setGamesPlayedVsAi(userTmp.get().getGamesPlayedVsAi() + 1);
                 if(game.getWinner().equals(userId)) userTmp.get().setGamesWonVsAi(userTmp.get().getGamesWonVsAi() + 1);
-                userRepository.save(userTmp.get());
             } else {
                 userTmp.get().setGamesPlayedVsUser(userTmp.get().getGamesPlayedVsUser() + 1);
-                Optional<User> userTmp2 = userRepository.findById(game.getOtherPlayer(userId));
-                if(userTmp2.isEmpty())  throw new RuntimeException("no.such.user");
-                userTmp2.get().setGamesPlayedVsUser(userTmp2.get().getGamesPlayedVsUser() + 1);
-                if(game.getWinner().equals(userTmp.get().getId()))  {
-                    userTmp.get().setGamesWonVsUser(userTmp.get().getGamesWonVsUser() + 1);
-                } else {
-                    userTmp2.get().setGamesWonVsUser(userTmp.get().getGamesWonVsUser() + 1);
-                }
-                userRepository.save(userTmp.get());
-                userRepository.save(userTmp2.get());
+                if(game.getWinner().equals(userTmp.get().getId()))  userTmp.get().setGamesWonVsUser(userTmp.get().getGamesWonVsUser() + 1);
             }
+            userRepository.save(userTmp.get());
         }
-        //game.clearAlreadyShot();
         return shootResponseDTO;
     }
 
 
     public LeaderboardDTO getLeaderboard(String opponent) {
-        if ("robot".equals(opponent)) {
-            return new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsAiDesc());
-        }
-        return new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsUserDesc());
+        return "robot".equals(opponent) ? new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsAiDesc()) :
+                new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsUserDesc());
     }
 }

@@ -30,6 +30,10 @@ public class GameField {
         this.field = gameField.field;
     }
 
+    /**
+     * Constructor for deep copy
+     * @param that instance to be copied
+     */
     GameField(GRIDSTATE[] that){
         System.out.println("gamefield:gridstateconstructor");
         field = new GRIDSTATE[that.length];

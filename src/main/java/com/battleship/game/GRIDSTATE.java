@@ -23,8 +23,4 @@ public enum GRIDSTATE {
         this.value = value;
     }
 
-    GRIDSTATE(GRIDSTATE that){
-        this(that.value);
-    }
-
 }

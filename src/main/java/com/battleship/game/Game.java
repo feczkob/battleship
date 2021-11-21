@@ -14,7 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @EqualsAndHashCode
 public class Game {
     GameLogic gameLogic;
-    private final Set<String> alreadyShot = ConcurrentHashMap.newKeySet();
 
     /**
      * Constructor for multiplayer game
@@ -33,14 +32,6 @@ public class Game {
     public Game(String player1){
         gameLogic = new GameLogic(player1, "robot");
     }
-
-//    public Game(){
-//        gameLogic = new GameLogic();
-//    }
-//
-//    public void setId(String Id){
-//        gameLogic.setId(Id);
-//    }
 
     /**
      * Get game field in the perspective of the player
@@ -70,19 +61,7 @@ public class Game {
      */
     public GameField shoot(String Id, Integer fieldId){
         System.out.println("game:shoot::" + Id);
-        GameField gameField;
-        if(!Id.equals("robot") && !getOtherPlayer(Id).equals("robot")){
-            synchronized (alreadyShot) {
-                if(alreadyShot.contains(Id))    throw new RuntimeException("multiple.shots");
-                alreadyShot.add(Id);
-            }
-            gameField = gameLogic.shoot(Id, fieldId);
-            while (alreadyShot.size() != 2 || !alreadyShot.contains(gameLogic.getOtherPlayer(Id))) {
-                Thread.onSpinWait();
-            }
-        } else gameField = gameLogic.shoot(Id, fieldId);
-        alreadyShot.clear();
-        return gameField;
+        return gameLogic.shoot(Id, fieldId);
     }
 
     /**
@@ -137,8 +116,4 @@ public class Game {
         return gameField1;
     }
 
-    public void clearAlreadyShot(){
-        System.out.println("game:clearalreadyshot");
-        alreadyShot.clear();
-    }
 }

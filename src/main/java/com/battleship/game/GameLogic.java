@@ -30,18 +30,6 @@ public class GameLogic {
         gameStates[1] = new GameState(player2);
     }
 
-//    public GameLogic(){
-//        gameStates = new GameState[2];
-//        gameStates[0] = new GameState();
-//        gameStates[1] = new GameState();
-//    }
-
-//    void setId(String Id){
-//        if(gameStates[0].getId() == null) {
-//            gameStates[0].setId(Id);
-//        } else gameStates[1].setId(Id);
-//    }
-
     /**
      * Place ships into the game field
      * @param gameField game field without ships
@@ -77,13 +65,15 @@ public class GameLogic {
         GRIDSTATE response;
         // opponent's gameField in my perspective
         GameField gameField;
-        if(Id.equals(gameStates[0].Id)){
-            response = gameStates[1].shoot(fieldId);
-            gameField = gameStates[0].opponentGameField;
-        } else {
-            response = gameStates[0].shoot(fieldId);
-            gameField = gameStates[1].opponentGameField;
-        }
+//        if(Id.equals(gameStates[0].Id)){
+//            response = gameStates[1].shoot(fieldId);
+//            gameField = gameStates[0].opponentGameField;
+//        } else {
+//            response = gameStates[0].shoot(fieldId);
+//            gameField = gameStates[1].opponentGameField;
+//        }
+        response = Id.equals(gameStates[0].Id) ? gameStates[1].shoot(fieldId) : gameStates[0].shoot(fieldId);
+        gameField = Id.equals(gameStates[0].Id) ? gameStates[0].opponentGameField : gameStates[1].opponentGameField;
         gameField.field[fieldId] = response;
         isFinished = gameStates[0].myShips.getIsFinished() || gameStates[1].myShips.getIsFinished();
         if(response == GRIDSTATE.SUNKEN)    changeHitToSunken(fieldId, gameField);
@@ -106,6 +96,11 @@ public class GameLogic {
         }
     }
 
+    /**
+     * Get neighbourhood of field
+     * @param fieldId Id of field
+     * @return neighbourhood
+     */
     private ArrayList<Integer> getNeighbours(Integer fieldId){
         ArrayList<Integer> neighbours = new ArrayList<>();
         // up
@@ -140,11 +135,6 @@ public class GameLogic {
      */
     public GameField getGameField(String Id) {
         System.out.println("gamelogic:getgamefield::" + Id);
-        //        if(gameStates[0].Id.equals(Id)) {
-//            //myGameField = placeShipsToField(new GameField(gameStates[1].opponentGameField), gameStates[0].myShips);
-//            myGameField = placeShipsToField(new GameField(gameStates[1].opponentGameField.field), gameStates[0].myShips);
-//        } else myGameField = placeShipsToField(new GameField(gameStates[0].opponentGameField.field), gameStates[1].myShips);
-//            //myGameField = placeShipsToField(new GameField(gameStates[0].opponentGameField), gameStates[1].myShips);
         return gameStates[0].Id.equals(Id) ? placeShipsToField(new GameField(gameStates[1].opponentGameField.field), gameStates[0].myShips) :
                 placeShipsToField(new GameField(gameStates[0].opponentGameField.field), gameStates[1].myShips);
     }
@@ -156,10 +146,12 @@ public class GameLogic {
      */
     public GameField getOpponentGameField(String Id) {
         System.out.println("gamelogic:getopponentgamefield::" + Id);
-        if(gameStates[0].Id.equals(Id)) {
-            return new GameField(gameStates[0].opponentGameField);
-        }
-        return new GameField(gameStates[1].opponentGameField);
+//        if(gameStates[0].Id.equals(Id)) {
+//            return new GameField(gameStates[0].opponentGameField);
+//        }
+//        return new GameField(gameStates[1].opponentGameField);
+        return gameStates[0].Id.equals(Id) ? gameStates[0].opponentGameField :
+                gameStates[1].opponentGameField;
     }
 
     /**
@@ -169,8 +161,7 @@ public class GameLogic {
      */
     public String getOtherPlayer(String Id) {
         System.out.println("gamelogic:getotherplayer::" + Id);
-        if(gameStates[0].Id.equals(Id)) return gameStates[1].Id;
-        return gameStates[0].Id;
+        return gameStates[0].Id.equals(Id) ? gameStates[1].Id : gameStates[0].Id;
     }
 
     /**
