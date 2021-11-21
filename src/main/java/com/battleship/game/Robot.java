@@ -2,9 +2,8 @@ package com.battleship.game;
 
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -15,8 +14,9 @@ public class Robot {
     /**
      * List if fields that have been already shot at
      */
-    private final HashMap<Integer, GRIDSTATE> responses = new HashMap<>();
+    private final Map<Integer, GRIDSTATE> responses = new ConcurrentHashMap<>();
     private final Random random = new Random();
+    private final Set<Integer> trash = ConcurrentHashMap.newKeySet();
     private final String Id = "robot";
     private Game game = null;
 
@@ -31,6 +31,7 @@ public class Robot {
         Integer field = nextFieldToBeShootAt();
         GRIDSTATE response = game.shoot(Id, field).field[field];
         responses.put(field, response);
+        System.out.println(field + ": " + response);
     }
 
     /**
@@ -42,14 +43,16 @@ public class Robot {
         responses.forEach((field, response) -> {
             if(response == GRIDSTATE.HIT){
                 ArrayList<Integer> neighbours = GameLogic.getNeighbours(field);
+                ArrayList<Integer> toBeRemoved = new ArrayList<>();
                 neighbours.forEach(neighbour -> {
-                    if(responses.containsKey(neighbour)) neighbours.remove(neighbour);
+                    if(responses.containsKey(neighbour)) toBeRemoved.add(neighbour);
                 });
+                toBeRemoved.forEach(neighbours::remove);
                 if(!neighbours.isEmpty()) returnField.set(neighbours.get(0));
             }
         });
 
-        while(responses.containsKey(returnField.get())){
+        while(responses.containsKey(returnField.get()) || trash.contains(returnField.get())){
             returnField.set(random.nextInt(100));
         }
         return returnField.get();

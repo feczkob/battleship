@@ -155,6 +155,7 @@ public class BattleshipService {
         threads.remove(userId);
         if(threads.get(game.getOtherPlayer(userId)) != null)    threads.get(game.getOtherPlayer(userId)).interrupt();
         threads.remove(game.getOtherPlayer(userId));
+        if(game.getOtherPlayer(userId).equals("robot")) robots.remove(userId);
         game.setLeft(userId);
     }
 
