@@ -22,15 +22,6 @@ public class GameState {
         this.Id = Id;
     }
 
-//    public GameState(){
-//        opponentGameField = new GameField();
-//        myShips = new Ships();
-//    }
-//
-//    void setId(String Id){
-//        this.Id = Id;
-//    }
-
     /**
      * Get the Id of the player
      * @return Id
