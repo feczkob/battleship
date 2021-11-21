@@ -147,4 +147,12 @@ public class GameLogic {
                 '}';
     }
 
+    public GameField getNewShipPositions(String id) {
+        if (gameStates[0].getId().equals(id)) {
+            gameStates[0].myShips.getNewShipPositions();
+        } else {
+            gameStates[1].myShips.getNewShipPositions();
+        }
+        return getGameField(id);
+    }
 }

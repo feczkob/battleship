@@ -92,6 +92,10 @@ public class Game {
                 '}';
     }
 
+    public GameField getNewShipPositions(String Id){
+        return gameLogic.getNewShipPositions(Id);
+    }
+
     /**
      * Declare themselves ready for the game
      * @param userId Id of the player

@@ -83,4 +83,11 @@ public class Ships {
                 "ships=" + ships +
                 '}';
     }
+
+    public void getNewShipPositions() {
+        for (ArrayList<Integer> ship: ships) {
+            ship.remove(0);
+            ship.add(ship.get(ship.size() - 1) + 1);
+        }
+    }
 }

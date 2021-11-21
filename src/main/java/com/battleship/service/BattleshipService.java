@@ -183,7 +183,7 @@ public class BattleshipService {
      */
     public GameField getNewShipPositions(String userId) {
         //TODO
-        return games.get(userId).getGameField(userId);
+        return games.get(userId).getNewShipPositions(userId);
     }
 
     /**
