@@ -24,7 +24,6 @@ public class GameLogic {
      * @param player2 Id of player2
      */
     public GameLogic(String player1, String player2){
-        //System.out.println("gamelogic:constructor");
         gameStates = new GameState[2];
         gameStates[0] = new GameState(player1);
         gameStates[1] = new GameState(player2);
@@ -37,7 +36,6 @@ public class GameLogic {
      * @return game field with ships
      */
     private GameField placeShipsToField(GameField gameField, Ships ships){
-        //System.out.println("gamelogic:placeshipstofield");
         for (ArrayList<Integer> a: ships.ships) {
             for (Integer pos: a) {
                 gameField.field[pos] = GRIDSTATE.SHIP;
@@ -61,7 +59,6 @@ public class GameLogic {
      * @return resulting game field
      */
     GameField shoot(String Id, Integer fieldId){
-        //System.out.println("gamelogic:shoot::" + Id);
         GRIDSTATE response;
         // opponent's gameField in my perspective
         GameField gameField;
@@ -79,7 +76,6 @@ public class GameLogic {
      * @param gameField resulting game field
      */
     private void changeHitToSunken(Integer fieldId, GameField gameField) {
-        //TODO
         ArrayList<Integer> neighbours = getNeighbours(fieldId);
         for (Integer field: neighbours) {
             if(gameField.field[field] == GRIDSTATE.HIT) {
@@ -107,27 +103,12 @@ public class GameLogic {
         return neighbours;
     }
 
-    public static void main(String[] args) {
-        GameField gameField = new GameField();
-        GameLogic gameLogic = new GameLogic("asd", "asd2");
-        gameLogic.changeHitToSunken(0, gameField);
-        gameLogic.changeHitToSunken(5, gameField);
-        gameLogic.changeHitToSunken(9, gameField);
-        gameLogic.changeHitToSunken(10, gameField);
-        gameLogic.changeHitToSunken(15, gameField);
-        gameLogic.changeHitToSunken(19, gameField);
-        gameLogic.changeHitToSunken(90, gameField);
-        gameLogic.changeHitToSunken(95, gameField);
-        gameLogic.changeHitToSunken(99, gameField);
-    }
-
     /**
      * Get player's game field with the ships on it
      * @param Id Id of the player
      * @return resulting game field
      */
     public GameField getGameField(String Id) {
-        //System.out.println("gamelogic:getgamefield::" + Id);
         return gameStates[0].Id.equals(Id) ? placeShipsToField(new GameField(gameStates[1].opponentGameField.field), gameStates[0].myShips) :
                 placeShipsToField(new GameField(gameStates[0].opponentGameField.field), gameStates[1].myShips);
     }
@@ -138,7 +119,6 @@ public class GameLogic {
      * @return resulting game field
      */
     public GameField getOpponentGameField(String Id) {
-        //System.out.println("gamelogic:getopponentgamefield::" + Id);
         return gameStates[0].Id.equals(Id) ? gameStates[0].opponentGameField :
                 gameStates[1].opponentGameField;
     }
@@ -149,7 +129,6 @@ public class GameLogic {
      * @return Id of the other player
      */
     public String getOtherPlayer(String Id) {
-        //System.out.println("gamelogic:getotherplayer::" + Id);
         return gameStates[0].Id.equals(Id) ? gameStates[1].Id : gameStates[0].Id;
     }
 
@@ -166,48 +145,6 @@ public class GameLogic {
         return "GameLogic{" +
                 "gameStates=" + Arrays.toString(gameStates) +
                 '}';
-    }
-
-    /**
-     * Unused function for game field with ships on it
-     * @param Id Id of the player
-     * @return resulting game field
-     */
-    private GameField myPerspective(String Id){
-        GameField myGameField;
-        if(Id.equals(gameStates[0].Id)){
-            myGameField = new GameField(gameStates[1].opponentGameField);
-            return placeShipsToField(myGameField, gameStates[0].myShips);
-        } else {
-            myGameField = new GameField(gameStates[0].opponentGameField);
-            return placeShipsToField(myGameField, gameStates[1].myShips);
-        }
-    }
-
-    /**
-     * Unused function for determining whole neighbourhood
-     * @param fieldId fieldId
-     * @return neighbours
-     */
-    private ArrayList<Integer> getWholeNeighbourhood(Integer fieldId){
-        ArrayList<Integer> neighbours = new ArrayList<>();
-        // up
-        if((fieldId - 10) >= 0){
-            if((fieldId) % 10 != 0) neighbours.add(fieldId - 11);
-            neighbours.add(fieldId - 10);
-            if((fieldId) % 10 != 9)  neighbours.add(fieldId - 9);
-        }
-        // left
-        if((fieldId) % 10 != 0) neighbours.add(fieldId - 1);
-        // right
-        if((fieldId) % 10 != 9) neighbours.add(fieldId + 1);
-        // down
-        if((fieldId + 10) < 100){
-            if((fieldId) % 10 != 0) neighbours.add(fieldId + 9);
-            neighbours.add(fieldId + 10);
-            if((fieldId) % 10 != 9) neighbours.add(fieldId + 11);
-        }
-        return neighbours;
     }
 
 }

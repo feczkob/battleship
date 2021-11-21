@@ -21,7 +21,6 @@ public class Game {
      * @param player2 Id of player2
      */
     public Game(String player1, String player2){
-        //System.out.println("game:constructor");
         gameLogic = new GameLogic(player1, player2);
     }
 
@@ -39,7 +38,6 @@ public class Game {
      * @return player's game field
      */
     public GameField getGameField(String Id){
-        //System.out.println("game:getgamefield::" + Id);
         return gameLogic.getGameField(Id);
     }
 
@@ -49,7 +47,6 @@ public class Game {
      * @return opponent's game field
      */
     public GameField getOpponentGameField(String Id){
-        //System.out.println("game:getopponentgamefield::" + Id);
         return gameLogic.getOpponentGameField(Id);
     }
 
@@ -60,7 +57,6 @@ public class Game {
      * @return resulting game fields
      */
     public GameField shoot(String Id, Integer fieldId){
-        //System.out.println("game:shoot::" + Id);
         return gameLogic.shoot(Id, fieldId);
     }
 
@@ -70,7 +66,6 @@ public class Game {
      * @return Id of the other player
      */
     public String getOtherPlayer(String Id) {
-        //System.out.println("game:getotherplayer::" + Id);
         return (gameLogic.getOtherPlayer(Id));
     }
 
@@ -103,17 +98,7 @@ public class Game {
      * @return initial game field
      */
     public GameField ready(String userId) {
-        //System.out.println("game:ready::" + userId);
         return gameLogic.getGameField(userId);
-    }
-
-    public static GameField changeShipsToWater(GameField gameField){
-        //System.out.println("game:changeshipstowater");
-        GameField gameField1 = new GameField(gameField);
-        for(int i = 0; i < gameField1.field.length; i++){
-            if(gameField1.field[i] == GRIDSTATE.SHIP) gameField1.field[i] = GRIDSTATE.WATER;
-        }
-        return gameField1;
     }
 
 }

@@ -71,24 +71,6 @@ public class BattleshipController {
     }
 
     /**
-     * Save user to the repository
-     * @param user user to be saved
-     * @return user
-     */
-//    @Schema(name = "addUser",description = "Add user - not used")
-//    @Operation(summary = "Add user - not used", responses = {
-//            @ApiResponse(responseCode = "200", description = "Successful operation",
-//                    content = {@Content(mediaType = "application/json",
-//                            schema = @Schema(implementation = User.class))}),
-//            @ApiResponse(responseCode = "404", description = "Service not found"),
-//            @ApiResponse(responseCode = "500", description = "Server error")
-//    })
-//    @RequestMapping(path = "/profile", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public User addUser(@Valid @RequestParam User user){
-        return battleshipService.save(user);
-    }
-
-    /**
      * Change username
      * @param Id Id of user
      * @param newUsername new username
