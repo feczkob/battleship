@@ -202,7 +202,6 @@ public class BattleshipService {
      * @return new game field
      */
     public GameField getNewShipPositions(String userId) {
-        //TODO
         return games.get(userId).getNewShipPositions(userId);
     }
 

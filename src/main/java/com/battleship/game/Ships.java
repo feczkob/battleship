@@ -113,15 +113,6 @@ public class Ships {
         return shipsTmp;
     }
 
-    public static void main(String[] args) {
-        Ships ships = new Ships();
-        GameField gameField = new GameField();
-        GameLogic gameLogic = new GameLogic("1", "2");
-//        gameLogic.placeShipsToField(gameField, ships);
-//        System.out.println(ships);
-//        System.out.println(gameField);
-    }
-
     @Override
     public String toString() {
         return "Ships{" +
@@ -129,11 +120,8 @@ public class Ships {
                 '}';
     }
 
-    public void getNewShipPositions() {
-        for (ArrayList<Integer> ship: ships) {
-            ship.remove(0);
-            ship.add(ship.get(ship.size() - 1) + 1);
-        }
+    void getNewShipPositions() {
+        ships = generateShips();
     }
 
     /**
