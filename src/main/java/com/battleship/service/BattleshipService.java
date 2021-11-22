@@ -24,7 +24,7 @@ public class BattleshipService {
     private final UserRepository userRepository;
 
     /**
-     * Repository for rooms - maybe not needed
+     * Repository for rooms
      */
     private final RoomRepository roomRepository;
 
@@ -38,6 +38,11 @@ public class BattleshipService {
      * Players with associated threads
      */
     private final ConcurrentHashMap<String, Thread> threads = new ConcurrentHashMap<>();
+
+    /**
+     * Players with associated robots in single player mode
+     */
+    private final ConcurrentHashMap<String, Robot> robots = new ConcurrentHashMap<>();
 
     /**
      * Injection of repositories
@@ -150,6 +155,7 @@ public class BattleshipService {
         threads.remove(userId);
         if(threads.get(game.getOtherPlayer(userId)) != null)    threads.get(game.getOtherPlayer(userId)).interrupt();
         threads.remove(game.getOtherPlayer(userId));
+        if(game.getOtherPlayer(userId).equals("robot")) robots.remove(userId);
         game.setLeft(userId);
     }
 
@@ -180,6 +186,8 @@ public class BattleshipService {
             case "robot":
                 game = new Game(userId);
                 games.put(userId, game);
+                Robot robot = new Robot(game);
+                robots.put(userId, robot);
                 break;
             default:
                 throw new RuntimeException("no.such.game.mode");
@@ -273,8 +281,9 @@ public class BattleshipService {
         if(game.getLeft().contains(opponent)) return getShootResponseDTOWhenPlayerLeft(userId, opponent, shootResponseDTO);
 
         if(game.getOtherPlayer(userId).equals("robot"))  {
-            Integer field2 = Robot.shoot();
-            game.shoot("robot", field2);
+            //Integer field2 = Robot.shoot();
+            //game.shoot("robot", field2);
+            robots.get(userId).shoot();
             shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
         } else {
             if (threads.get(opponent) == null) {
@@ -314,11 +323,12 @@ public class BattleshipService {
             if(opponent.equals("robot")){
                 userTmp.get().setGamesPlayedVsAi(userTmp.get().getGamesPlayedVsAi() + 1);
                 if(game.getWinner().equals(userId)) userTmp.get().setGamesWonVsAi(userTmp.get().getGamesWonVsAi() + 1);
+                robots.remove(userId);
             } else {
                 userTmp.get().setGamesPlayedVsUser(userTmp.get().getGamesPlayedVsUser() + 1);
                 if(game.getWinner().equals(userTmp.get().getId()))  userTmp.get().setGamesWonVsUser(userTmp.get().getGamesWonVsUser() + 1);
-                games.remove(userId);
             }
+            games.remove(userId);
             userRepository.save(userTmp.get());
         }
         return shootResponseDTO;

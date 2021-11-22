@@ -90,7 +90,7 @@ public class GameLogic {
      * @param fieldId Id of field
      * @return neighbourhood
      */
-    private ArrayList<Integer> getNeighbours(Integer fieldId){
+     static ArrayList<Integer> getNeighbours(Integer fieldId){
         ArrayList<Integer> neighbours = new ArrayList<>();
         // up
         if(fieldId - 10 >= 0) neighbours.add(fieldId - 10);
