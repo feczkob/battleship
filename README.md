@@ -8,8 +8,8 @@ The locations of the fleets are concealed from the other player. Players alterna
 and the objective of the game is to destroy the opposing player's fleet. <br />
 
 When the game starts the player is given an initial state of their ships: 
-- 2 sized: 5 pcs
-- 3 sized: 4 pcs
+- 2 sized: 4 pcs
+- 3 sized: 3 pcs
 - 4 sized: 2 pcs
 - 5 sized: 1 pcs <br/>
 

@@ -2,8 +2,9 @@ package com.battleship.game;
 
 import lombok.EqualsAndHashCode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Ships class containing the positions of the player's ships
@@ -11,6 +12,7 @@ import java.util.Arrays;
 @EqualsAndHashCode
 public class Ships {
     volatile ArrayList<ArrayList<Integer>>   ships;
+    private final Random random = new Random();
 
     /**
      * Shoot at a specific field
@@ -52,29 +54,72 @@ public class Ships {
      * @return positions of ships
      */
     private ArrayList<ArrayList<Integer>> generateShips(){
-        //TODO
         ArrayList<ArrayList<Integer>> shipsTmp = new ArrayList<>();
+        List<Integer> possiblePositions = IntStream.range(1, 100).boxed().collect(Collectors.toList());
+        int[] sizes = {5, 4, 4, 3, 3, 3, 2, 2, 2, 2};
 
-        // 5 pcs 2 sized
-        shipsTmp.add(new ArrayList<>(Arrays.asList(0,1)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(3,4)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(6,7)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(20,21)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(23,24)));
+        for (int size : sizes) {
+            boolean posGood = false;
+            Integer pos = null;
+            ArrayList<Integer> goodDirs = new ArrayList<>();
+            while (!posGood) {
+                pos = random.nextInt(100);
+                for (int j = 0; j < size; j++) {
+                    if (!possiblePositions.contains(pos + j)) break;
+                    if (Math.floor((double) pos / 10) != Math.floor((double) (pos + j) / 10)) break;
+                    if (j == size - 1) {
+                        goodDirs.add(1);
+                        posGood = true;
+                    }
+                }
+                for (int j = 0; j < size; j++) {
+                    if (!possiblePositions.contains(pos - j)) break;
+                    if (Math.floor((double) pos / 10) != Math.floor((double) (pos - j) / 10)) break;
+                    if (j == size - 1) {
+                        goodDirs.add(-1);
+                        posGood = true;
+                    }
+                }
+                for (int j = 0; j < size; j++) {
+                    if (!possiblePositions.contains(pos + (j * 10))) break;
+                    if (j == size - 1) {
+                        goodDirs.add(10);
+                        posGood = true;
+                    }
+                }
+                for (int j = 0; j < size; j++) {
+                    if (!possiblePositions.contains(pos - (j * 10))) break;
+                    if (j == size - 1) {
+                        goodDirs.add(-10);
+                        posGood = true;
+                    }
+                }
+            }
 
-        // 4 pcs 3 sized
-        shipsTmp.add(new ArrayList<>(Arrays.asList(26,27,28)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(40,41,42)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(44,45,46)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(60,61,62)));
-
-        // 2 pcs 4 sized
-        shipsTmp.add(new ArrayList<>(Arrays.asList(64,65,66,67)));
-        shipsTmp.add(new ArrayList<>(Arrays.asList(80,81,82,83)));
-
-        // 1 pcs 5 sized
-        shipsTmp.add(new ArrayList<>(Arrays.asList(59,69,79,89,99)));
+            ArrayList<Integer> nextShip = new ArrayList<>();
+            nextShip.add(pos);
+            Collections.shuffle(goodDirs);
+            for (int j = 1; j < size; j++) {
+                nextShip.add(pos + goodDirs.get(0) * j);
+            }
+            for (Integer field : nextShip) {
+                ArrayList<Integer> wholeNeighbourhood = getWholeNeighbourhood(field);
+                for (Integer neighbour : wholeNeighbourhood) {
+                    possiblePositions.remove(neighbour);
+                }
+            }
+            shipsTmp.add(nextShip);
+        }
         return shipsTmp;
+    }
+
+    public static void main(String[] args) {
+        Ships ships = new Ships();
+        GameField gameField = new GameField();
+        GameLogic gameLogic = new GameLogic("1", "2");
+//        gameLogic.placeShipsToField(gameField, ships);
+//        System.out.println(ships);
+//        System.out.println(gameField);
     }
 
     @Override
@@ -89,5 +134,31 @@ public class Ships {
             ship.remove(0);
             ship.add(ship.get(ship.size() - 1) + 1);
         }
+    }
+
+    /**
+     * Unused function for determining whole neighbourhood
+     * @param fieldId fieldId
+     * @return neighbours
+     */
+    private ArrayList<Integer> getWholeNeighbourhood(Integer fieldId){
+        ArrayList<Integer> neighbours = new ArrayList<>();
+        // up
+        if((fieldId - 10) >= 0){
+            if((fieldId) % 10 != 0) neighbours.add(fieldId - 11);
+            neighbours.add(fieldId - 10);
+            if((fieldId) % 10 != 9)  neighbours.add(fieldId - 9);
+        }
+        // left
+        if((fieldId) % 10 != 0) neighbours.add(fieldId - 1);
+        // right
+        if((fieldId) % 10 != 9) neighbours.add(fieldId + 1);
+        // down
+        if((fieldId + 10) < 100){
+            if((fieldId) % 10 != 0) neighbours.add(fieldId + 9);
+            neighbours.add(fieldId + 10);
+            if((fieldId) % 10 != 9) neighbours.add(fieldId + 11);
+        }
+        return neighbours;
     }
 }
