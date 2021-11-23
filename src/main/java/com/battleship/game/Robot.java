@@ -34,6 +34,7 @@ public class Robot {
             case MISS:
                 trash.add(field);
                 possibleShots.remove(field);
+                removeCertainNeighboursFromPossibleShots(field);
                 break;
             case HIT:
                 hits.add(field);
@@ -42,14 +43,32 @@ public class Robot {
                 addNeighboursToPossibleShots(field);
                 break;
             case SUNKEN:
+                possibleShots.remove(field);
+                trash.add(field);
                 trash.addAll(Ships.getWholeNeighbourhood(field));
                 addNeighboursToTrash(field);
         }
 
         System.out.println(field + ": " + response);
-        System.out.println(possibleShots);
-        System.out.println(hits);
-        System.out.println(trash);
+        System.out.println("possibleShots: " + possibleShots);
+        System.out.println("hits: " + hits);
+        System.out.println("trash: " + trash);
+    }
+
+    private void removeCertainNeighboursFromPossibleShots(Integer field) {
+        HashSet<Integer> neighbours = new HashSet<>(GameLogic.getNeighbours(field));
+        if(hits.stream().anyMatch(neighbours::contains)){
+            Optional<Integer> hit = neighbours.stream().filter(hits::contains).findFirst();
+            if(hit.isPresent()){
+                if(Math.abs(field - hit.get()) == 1){
+                    trash.add(field - 10);
+                    trash.add(field + 10);
+                } else {
+                    trash.add(field - 1);
+                    trash.add(field + 1);
+                }
+            }
+        }
     }
 
     private void addNeighboursToTrash(Integer field) {
@@ -73,31 +92,31 @@ public class Robot {
                 switch (field - neighbour){
                     case 1:
                         // to the left
-                        if(field % 10 != 9) possibleShots.add(field + 1);
-                        if(neighbour % 10 != 0) possibleShots.add(neighbour - 1);
+                        if(!trash.contains(field + 1) && field % 10 != 9) possibleShots.add(field + 1);
+                        if(!trash.contains(neighbour - 1) && neighbour % 10 != 0) possibleShots.add(neighbour - 1);
                         toBeRemoved = Stream.of(field + 10, field - 10, neighbour + 10, neighbour - 10)
                                         .collect(Collectors.toCollection(HashSet::new));
                         possibleShots.removeAll(toBeRemoved);
                         break;
                     case -1:
                         // to the right
-                        if(neighbour % 10 != 9) possibleShots.add(neighbour + 1);
-                        if(field % 10 != 0) possibleShots.add(field - 1);
+                        if(!trash.contains(neighbour + 1) && neighbour % 10 != 9) possibleShots.add(neighbour + 1);
+                        if(!trash.contains(field - 1) && field % 10 != 0) possibleShots.add(field - 1);
                         toBeRemoved = Stream.of(field + 10, field - 10, neighbour + 10, neighbour - 10)
                                 .collect(Collectors.toCollection(HashSet::new));
                         possibleShots.removeAll(toBeRemoved);
                         break;
                     case 10:
                         // to down
-                        if(neighbour - 10 >= 0) possibleShots.add(neighbour - 10);
-                        if(field + 10 < 100) possibleShots.add(field + 10);
+                        if(!trash.contains(neighbour - 10) && neighbour - 10 >= 0) possibleShots.add(neighbour - 10);
+                        if(!trash.contains(field + 10) && field + 10 < 100) possibleShots.add(field + 10);
                         deleteLeftRightNeighboursFromPossibleShots(field, neighbour, toBeRemoved);
                         possibleShots.removeAll(toBeRemoved);
                         break;
                     case -10:
                         // to up
-                        if(field - 10 >= 0) possibleShots.add(field - 10);
-                        if(neighbour + 10 < 100) possibleShots.add(neighbour + 10);
+                        if(!trash.contains(field - 10) && field - 10 >= 0) possibleShots.add(field - 10);
+                        if(!trash.contains(neighbour + 10) && neighbour + 10 < 100) possibleShots.add(neighbour + 10);
                         deleteLeftRightNeighboursFromPossibleShots(field, neighbour, toBeRemoved);
                         possibleShots.removeAll(toBeRemoved);
                         break;
