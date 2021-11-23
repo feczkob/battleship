@@ -5,18 +5,18 @@ import lombok.NoArgsConstructor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Robot class for single player game
  */
 @NoArgsConstructor
 public class Robot {
-    /**
-     * List if fields that have been already shot at
-     */
-    private final Map<Integer, GRIDSTATE> responses = new ConcurrentHashMap<>();
     private final Random random = new Random();
-    private final Set<Integer> trash = ConcurrentHashMap.newKeySet();
+    private final Set<Integer> trash = new HashSet<>();
+    private final Set<Integer> hits = new HashSet<>();
+    private final Set<Integer> possibleShots = new HashSet<>();
     private final String Id = "robot";
     private Game game = null;
 
@@ -30,8 +30,93 @@ public class Robot {
     public void shoot(){
         Integer field = nextFieldToBeShootAt();
         GRIDSTATE response = game.shoot(Id, field).field[field];
-        responses.put(field, response);
+        switch (response){
+            case MISS:
+                trash.add(field);
+                possibleShots.remove(field);
+                break;
+            case HIT:
+                hits.add(field);
+                trash.add(field);
+                possibleShots.remove(field);
+                addNeighboursToPossibleShots(field);
+                break;
+            case SUNKEN:
+                trash.addAll(Ships.getWholeNeighbourhood(field));
+                addNeighboursToTrash(field);
+        }
+
         System.out.println(field + ": " + response);
+        System.out.println(possibleShots);
+        System.out.println(hits);
+        System.out.println(trash);
+    }
+
+    private void addNeighboursToTrash(Integer field) {
+        ArrayList<Integer> neighbours = GameLogic.getNeighbours(field);
+        for (Integer neighbour: neighbours) {
+            if(hits.contains(neighbour)){
+                hits.remove(neighbour);
+                possibleShots.remove(neighbour);
+                trash.addAll(Ships.getWholeNeighbourhood(field));
+                addNeighboursToTrash(neighbour);
+            }
+        }
+    }
+
+    private void addNeighboursToPossibleShots(Integer field) {
+        ArrayList<Integer> neighbours = GameLogic.getNeighbours(field);
+        boolean firstHit = true;
+        for (Integer neighbour: neighbours) {
+            if(hits.contains(neighbour)){
+                HashSet<Integer> toBeRemoved = new HashSet<>();
+                switch (field - neighbour){
+                    case 1:
+                        // to the left
+                        if(field % 10 != 9) possibleShots.add(field + 1);
+                        if(neighbour % 10 != 0) possibleShots.add(neighbour - 1);
+                        toBeRemoved = Stream.of(field + 10, field - 10, neighbour + 10, neighbour - 10)
+                                        .collect(Collectors.toCollection(HashSet::new));
+                        possibleShots.removeAll(toBeRemoved);
+                        break;
+                    case -1:
+                        // to the right
+                        if(neighbour % 10 != 9) possibleShots.add(neighbour + 1);
+                        if(field % 10 != 0) possibleShots.add(field - 1);
+                        toBeRemoved = Stream.of(field + 10, field - 10, neighbour + 10, neighbour - 10)
+                                .collect(Collectors.toCollection(HashSet::new));
+                        possibleShots.removeAll(toBeRemoved);
+                        break;
+                    case 10:
+                        // to down
+                        if(neighbour - 10 >= 0) possibleShots.add(neighbour - 10);
+                        if(field + 10 < 100) possibleShots.add(field + 10);
+                        deleteLeftRightNeighboursFromPossibleShots(field, neighbour, toBeRemoved);
+                        possibleShots.removeAll(toBeRemoved);
+                        break;
+                    case -10:
+                        // to up
+                        if(field - 10 >= 0) possibleShots.add(field - 10);
+                        if(neighbour + 10 < 100) possibleShots.add(neighbour + 10);
+                        deleteLeftRightNeighboursFromPossibleShots(field, neighbour, toBeRemoved);
+                        possibleShots.removeAll(toBeRemoved);
+                        break;
+                }
+                firstHit = false;
+            }
+        }
+        if(firstHit) possibleShots.addAll(neighbours);
+    }
+
+    private void deleteLeftRightNeighboursFromPossibleShots(Integer field, Integer neighbour, HashSet<Integer> toBeRemoved) {
+        if(field % 10 != 0){
+            toBeRemoved.add(field - 1);
+            toBeRemoved.add(neighbour - 1);
+        }
+        if (field % 10 != 9) {
+            toBeRemoved.add(field + 1);
+            toBeRemoved.add(neighbour + 1);
+        }
     }
 
     /**
@@ -39,23 +124,11 @@ public class Robot {
      * @return next field
      */
     private Integer nextFieldToBeShootAt(){
-        AtomicInteger returnField = new AtomicInteger(random.nextInt(100));
-        responses.forEach((field, response) -> {
-            if(response == GRIDSTATE.HIT){
-                ArrayList<Integer> neighbours = GameLogic.getNeighbours(field);
-                ArrayList<Integer> toBeRemoved = new ArrayList<>();
-                neighbours.forEach(neighbour -> {
-                    if(responses.containsKey(neighbour)) toBeRemoved.add(neighbour);
-                });
-                toBeRemoved.forEach(neighbours::remove);
-                if(!neighbours.isEmpty()) returnField.set(neighbours.get(0));
-            }
-        });
-
-        while(responses.containsKey(returnField.get()) || trash.contains(returnField.get())){
-            returnField.set(random.nextInt(100));
+        Integer returnField = random.nextInt(100);
+        if(!possibleShots.isEmpty()) {
+            returnField = possibleShots.stream().findFirst().get();
         }
-        return returnField.get();
+        return returnField;
     }
 
     /**
