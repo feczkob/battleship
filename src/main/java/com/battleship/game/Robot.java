@@ -34,7 +34,7 @@ public class Robot {
             case MISS:
                 trash.add(field);
                 possibleShots.remove(field);
-                removeCertainNeighboursFromPossibleShots(field);
+                //removeCertainNeighboursFromPossibleShots(field);
                 break;
             case HIT:
                 hits.add(field);
@@ -45,8 +45,8 @@ public class Robot {
             case SUNKEN:
                 possibleShots.remove(field);
                 trash.add(field);
-                trash.addAll(Ships.getWholeNeighbourhood(field));
                 addNeighboursToTrash(field);
+                hits.clear();
         }
 
         System.out.println(field + ": " + response);
@@ -61,11 +61,15 @@ public class Robot {
             Optional<Integer> hit = neighbours.stream().filter(hits::contains).findFirst();
             if(hit.isPresent()){
                 if(Math.abs(field - hit.get()) == 1){
-                    trash.add(field - 10);
-                    trash.add(field + 10);
+                    trash.add(hit.get() - 10);
+                    trash.add(hit.get() + 10);
+                    possibleShots.remove(field - 10);
+                    possibleShots.remove(field + 10);
                 } else {
-                    trash.add(field - 1);
-                    trash.add(field + 1);
+                    trash.add(hit.get() - 1);
+                    trash.add(hit.get() + 1);
+                    possibleShots.remove(field - 1);
+                    possibleShots.remove(field + 1);
                 }
             }
         }
@@ -73,14 +77,16 @@ public class Robot {
 
     private void addNeighboursToTrash(Integer field) {
         ArrayList<Integer> neighbours = GameLogic.getNeighbours(field);
+        trash.addAll(Ships.getWholeNeighbourhood(field));
+        Ships.getWholeNeighbourhood(field).forEach(possibleShots::remove);
+
         for (Integer neighbour: neighbours) {
             if(hits.contains(neighbour)){
-                hits.remove(neighbour);
-                possibleShots.remove(neighbour);
-                trash.addAll(Ships.getWholeNeighbourhood(field));
+                hits.remove(field);
                 addNeighboursToTrash(neighbour);
             }
         }
+        if(hits.stream().noneMatch(neighbours::contains))   hits.remove(field);
     }
 
     private void addNeighboursToPossibleShots(Integer field) {
@@ -124,7 +130,11 @@ public class Robot {
                 firstHit = false;
             }
         }
-        if(firstHit) possibleShots.addAll(neighbours);
+        if(firstHit) {
+            for (Integer neighbour: neighbours) {
+                if(!trash.contains(neighbour))  possibleShots.add(neighbour);
+            }
+        }
     }
 
     private void deleteLeftRightNeighboursFromPossibleShots(Integer field, Integer neighbour, HashSet<Integer> toBeRemoved) {
@@ -143,10 +153,11 @@ public class Robot {
      * @return next field
      */
     private Integer nextFieldToBeShootAt(){
-        Integer returnField = random.nextInt(100);
+        int returnField = random.nextInt(100);
         if(!possibleShots.isEmpty()) {
             returnField = possibleShots.stream().findFirst().get();
         }
+        while(trash.contains(returnField))  returnField = random.nextInt();
         return returnField;
     }
 
