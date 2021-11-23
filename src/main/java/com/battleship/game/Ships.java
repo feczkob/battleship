@@ -129,7 +129,7 @@ public class Ships {
      * @param fieldId fieldId
      * @return neighbours
      */
-    private ArrayList<Integer> getWholeNeighbourhood(Integer fieldId){
+     static ArrayList<Integer> getWholeNeighbourhood(Integer fieldId){
         ArrayList<Integer> neighbours = new ArrayList<>();
         // up
         if((fieldId - 10) >= 0){
