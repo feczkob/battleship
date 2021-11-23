@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Leaderboard DTO
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

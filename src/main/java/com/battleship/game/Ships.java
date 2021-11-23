@@ -2,7 +2,10 @@ package com.battleship.game;
 
 import lombok.EqualsAndHashCode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,7 +22,7 @@ public class Ships {
      * @param field field to be shot at
      * @return resulting grid state
      */
-    public GRIDSTATE shoot(Integer field){
+    GRIDSTATE shoot(Integer field){
         for (ArrayList<Integer> a: ships) {
             if(a.contains(field)){
                 a.remove(field);
@@ -37,7 +40,7 @@ public class Ships {
      * Get if the game is finished
      * @return boolean
      */
-    public boolean getIsFinished(){
+    boolean getIsFinished(){
         return ships.isEmpty();
     }
 
@@ -113,13 +116,9 @@ public class Ships {
         return shipsTmp;
     }
 
-    @Override
-    public String toString() {
-        return "Ships{" +
-                "ships=" + ships +
-                '}';
-    }
-
+    /**
+     * Get new ship positions
+     */
     void getNewShipPositions() {
         ships = generateShips();
     }
@@ -148,5 +147,13 @@ public class Ships {
             if((fieldId) % 10 != 9) neighbours.add(fieldId + 11);
         }
         return neighbours;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Ships{" +
+                "ships=" + ships +
+                '}';
     }
 }

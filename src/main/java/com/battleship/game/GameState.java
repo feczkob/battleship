@@ -35,7 +35,7 @@ public class GameState {
      * @param field field to be shot at
      * @return resulting grid state
      */
-    public GRIDSTATE shoot(Integer field){
+    GRIDSTATE shoot(Integer field){
         return myShips.shoot(field);
     }
 

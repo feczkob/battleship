@@ -3,8 +3,6 @@ package com.battleship.game;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,6 +18,10 @@ public class Robot {
     private final String Id = "robot";
     private Game game = null;
 
+    /**
+     * Constructor
+     * @param game game in which the robot plays
+     */
     public Robot(Game game){
         this.game = game;
     }

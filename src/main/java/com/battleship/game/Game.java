@@ -4,9 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Game class
@@ -87,13 +84,11 @@ public class Game {
         return gameLogic.getWinner();
     }
 
-    @Override
-    public String toString() {
-        return "Game{" +
-                "gameLogic=" + gameLogic +
-                '}';
-    }
-
+    /**
+     * Get new ship positions
+     * @param Id Id of the player
+     * @return new game field
+     */
     public GameField getNewShipPositions(String Id){
         return gameLogic.getNewShipPositions(Id);
     }
@@ -107,11 +102,27 @@ public class Game {
         return gameLogic.getGameField(userId);
     }
 
+    /**
+     * Set the player who left the game
+     * @param userId player who left the game
+     */
     public void setLeft(String userId) {
         left.add(userId);
     }
 
+    /**
+     * Get player(s) who left the game
+     * @return player(s)
+     */
     public ArrayList<String> getLeft() {
         return left;
+    }
+
+    @Override
+    public String toString() {
+        return "Game{" +
+                "gameLogic=" + gameLogic +
+                ", left=" + left +
+                '}';
     }
 }

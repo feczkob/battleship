@@ -21,6 +21,10 @@ public class Room {
 
     private String userId;
 
+    /**
+     * Constructor
+     * @param Id Id of the room
+     */
     public Room(String Id){
         userId = Id;
     }

@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * Response class that is sent to the clients
+ * Shoot response DTO
  */
 @Data
 @NoArgsConstructor

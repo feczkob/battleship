@@ -14,7 +14,6 @@ public class GameLogic {
      * Game state object for each player
      */
     private final GameState[] gameStates;
-
     private volatile boolean isFinished = false;
     private String winner;
 
@@ -48,7 +47,7 @@ public class GameLogic {
      * Get if the game is finished
      * @return boolean
      */
-    public boolean getIsFinished() {
+    boolean getIsFinished() {
         return isFinished;
     }
 
@@ -136,8 +135,22 @@ public class GameLogic {
      * Get the Id of the winner
      * @return Id
      */
-    public String getWinner() {
+    String getWinner() {
         return winner;
+    }
+
+    /**
+     * Get new ship positions
+     * @param Id Id of the player
+     * @return new game field
+     */
+    GameField getNewShipPositions(String Id) {
+        if (gameStates[0].getId().equals(Id)) {
+            gameStates[0].myShips.getNewShipPositions();
+        } else {
+            gameStates[1].myShips.getNewShipPositions();
+        }
+        return getGameField(Id);
     }
 
     @Override
@@ -145,14 +158,5 @@ public class GameLogic {
         return "GameLogic{" +
                 "gameStates=" + Arrays.toString(gameStates) +
                 '}';
-    }
-
-    GameField getNewShipPositions(String id) {
-        if (gameStates[0].getId().equals(id)) {
-            gameStates[0].myShips.getNewShipPositions();
-        } else {
-            gameStates[1].myShips.getNewShipPositions();
-        }
-        return getGameField(id);
     }
 }

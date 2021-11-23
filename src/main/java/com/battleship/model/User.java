@@ -31,6 +31,11 @@ public class User {
     private int gamesWonVsAi = 0;
     private int gamesWonVsUser = 0;
 
+    /**
+     * Constructor
+     * @param id Id of the player
+     * @param name name of the player
+     */
     public User(String id, String name){
         this.Id = id;
         this.name = name;
