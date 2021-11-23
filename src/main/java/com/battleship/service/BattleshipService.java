@@ -245,6 +245,13 @@ public class BattleshipService {
         return shootResponseDTO;
     }
 
+    /**
+     * Function for returning DTO in case of a player leaves
+     * @param userId the other player is the winner
+     * @param opponent opponent leaves
+     * @param shootResponseDTO DTO to return
+     * @return DTO
+     */
     private ShootResponseDTO getShootResponseDTOWhenPlayerLeft(String userId, String opponent, ShootResponseDTO shootResponseDTO) {
         shootResponseDTO.setWinner(userId);
         shootResponseDTO.setFinished(true);
@@ -280,8 +287,6 @@ public class BattleshipService {
         if(game.getLeft().contains(opponent)) return getShootResponseDTOWhenPlayerLeft(userId, opponent, shootResponseDTO);
 
         if(game.getOtherPlayer(userId).equals("robot"))  {
-            //Integer field2 = Robot.shoot();
-            //game.shoot("robot", field2);
             robots.get(userId).shoot();
             shootResponseDTO.setGameField2(game.shoot(userId, fieldId));
         } else {
@@ -334,6 +339,11 @@ public class BattleshipService {
     }
 
 
+    /**
+     * Get leaderboard
+     * @param opponent "user" or "robot"
+     * @return leaderboard DTO
+     */
     public LeaderboardDTO getLeaderboard(String opponent) {
         return "robot".equals(opponent) ? new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsAiDesc()) :
                 new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsUserDesc());

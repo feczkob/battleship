@@ -25,7 +25,7 @@ public class Robot {
     }
 
     /**
-     * Shoot at a random field and save the response
+     * Shoot according to previous shots
      */
     public void shoot(){
         Integer field = nextFieldToBeShootAt();
@@ -49,10 +49,10 @@ public class Robot {
                 hits.clear();
         }
 
-        System.out.println(field + ": " + response);
-        System.out.println("possibleShots: " + possibleShots);
-        System.out.println("hits: " + hits);
-        System.out.println("trash: " + trash);
+//        System.out.println(field + ": " + response);
+//        System.out.println("possibleShots: " + possibleShots);
+//        System.out.println("hits: " + hits);
+//        System.out.println("trash: " + trash);
     }
 
     private void removeCertainNeighboursFromPossibleShots(Integer field) {
@@ -75,6 +75,10 @@ public class Robot {
         }
     }
 
+    /**
+     * Add neighbours to trash
+     * @param field field
+     */
     private void addNeighboursToTrash(Integer field) {
         ArrayList<Integer> neighbours = GameLogic.getNeighbours(field);
         trash.addAll(Ships.getWholeNeighbourhood(field));
@@ -89,6 +93,10 @@ public class Robot {
         if(hits.stream().noneMatch(neighbours::contains))   hits.remove(field);
     }
 
+    /**
+     * Add neighbours of HIT field to possible shots
+     * @param field field
+     */
     private void addNeighboursToPossibleShots(Integer field) {
         ArrayList<Integer> neighbours = GameLogic.getNeighbours(field);
         boolean firstHit = true;
@@ -137,6 +145,12 @@ public class Robot {
         }
     }
 
+    /**
+     * Delete neighbours if ship is vertical
+     * @param field ship field
+     * @param neighbour neighbour
+     * @param toBeRemoved to be removed
+     */
     private void deleteLeftRightNeighboursFromPossibleShots(Integer field, Integer neighbour, HashSet<Integer> toBeRemoved) {
         if(field % 10 != 0){
             toBeRemoved.add(field - 1);
@@ -157,7 +171,7 @@ public class Robot {
         if(!possibleShots.isEmpty()) {
             returnField = possibleShots.stream().findFirst().get();
         }
-        while(trash.contains(returnField))  returnField = random.nextInt();
+        while(trash.contains(returnField))  returnField = random.nextInt(100);
         return returnField;
     }
 
