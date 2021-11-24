@@ -18,6 +18,7 @@ services:
     - '3306:3306'
     volumes:
       - ./../../../../db:/var/lib/mysql
+      - "./init-db/init-db.sql:/docker-entrypoint-initdb.d/1.sql:ro"
     networks:
       - mynetwork
 
@@ -26,9 +27,11 @@ services:
     container_name: spring-battleship
     environment:
       SPRING_DATASOURCE_URL: "jdbc:mysql://database:3306/battleship?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=true"
+      MYSQL_HOST: database
     ports:
       - "8080:8080"
     networks:
       - mynetwork
     depends_on:
       - database
+    restart: on-failure
