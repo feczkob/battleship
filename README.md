@@ -25,6 +25,7 @@ They can ask for new positions via a call to the corresponding API endpoint.
 7. Start a single player game vs. a naive robot
 8. Start a multiplayer game vs. a real user
 9. Shoot at a specific field: multiple shots at different fields from one player are disabled
+10. Get leaderboard
 
 ## Commands related to the app
 To run the app:
