@@ -9,13 +9,15 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.battleship</groupId>
-    <artifactId>application</artifactId>
+    <artifactId>battleship</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>application</name>
+    <name>battleship</name>
     <description>Backend for battleship</description>
+
     <properties>
         <java.version>11</java.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -42,7 +44,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.2.32</version>
+            <version>1.5.12</version>
         </dependency>
 <!--        devtools-->
         <dependency>
@@ -54,7 +56,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
-            <version>2.4.0</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -79,5 +80,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>

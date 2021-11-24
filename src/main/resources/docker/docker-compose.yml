@@ -1,8 +1,13 @@
 version: '3'
+
+networks:
+  mynetwork:
+
+
 services:
   database:
     image: mysql:5.7
-    container_name: 'database'
+    container_name: database
     restart: always
     environment:
       MYSQL_DATABASE: 'battleship'
@@ -13,3 +18,17 @@ services:
     - '3306:3306'
     volumes:
       - ./../../../../db:/var/lib/mysql
+    networks:
+      - mynetwork
+
+  spring-battleship:
+    image: feczkob/battleship:battleship-1.0
+    container_name: spring-battleship
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://database:3306/battleship?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=true"
+    ports:
+      - "8080:8080"
+    networks:
+      - mynetwork
+    depends_on:
+      - database
