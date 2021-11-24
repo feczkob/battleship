@@ -6,4 +6,4 @@ ADD ${JAR_FILE} app.jar
 ENTRYPOINT ["java", "-jar", "app.jar", "-Djava.net.preferIPv4Stack=true"]
 
 # in battleship folder
-#  docker build -f src/main/resources/docker/Dockerfile -t feczkob/battleship:battleship-1.0 ./
+# docker build -f src/main/resources/docker/Dockerfile -t feczkob/battleship:battleship-1.0 ./
