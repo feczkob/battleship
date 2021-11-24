@@ -150,13 +150,15 @@ public class BattleshipService {
      * @param userId user who leaves
      */
     public void leaveGame(String userId) {
-        Game game = games.get(userId);
-        threads.remove(userId);
-        if(!game.getOtherPlayer(userId).equals("robot") && threads.get(game.getOtherPlayer(userId)) != null)
-            threads.get(game.getOtherPlayer(userId)).interrupt();
-        threads.remove(game.getOtherPlayer(userId));
-        if(game.getOtherPlayer(userId).equals("robot")) robots.remove(userId);
-        game.setLeft(userId);
+        if(games.get(userId) != null) {
+            Game game = games.get(userId);
+            threads.remove(userId);
+            if (!game.getOtherPlayer(userId).equals("robot") && threads.get(game.getOtherPlayer(userId)) != null)
+                threads.get(game.getOtherPlayer(userId)).interrupt();
+            threads.remove(game.getOtherPlayer(userId));
+            if (game.getOtherPlayer(userId).equals("robot")) robots.remove(userId);
+            game.setLeft(userId);
+        }
     }
 
     /**
@@ -326,8 +328,14 @@ public class BattleshipService {
             shootResponseDTO.setWinner(game.getWinner());
             if(opponent.equals("robot")){
                 userTmp.get().setGamesPlayedVsAi(userTmp.get().getGamesPlayedVsAi() + 1);
-                if(game.getWinner().equals(userId)) userTmp.get().setGamesWonVsAi(userTmp.get().getGamesWonVsAi() + 1);
+                Optional<User> robot = userRepository.findById("robot");
+                if(robot.isEmpty()) throw new RuntimeException("no.such.user");
+                robot.get().setGamesPlayedVsUser(robot.get().getGamesPlayedVsUser() + 1);
+                if(game.getWinner().equals(userId)) {
+                    userTmp.get().setGamesWonVsAi(userTmp.get().getGamesWonVsAi() + 1);
+                } else robot.get().setGamesWonVsUser(robot.get().getGamesPlayedVsUser() + 1);
                 robots.remove(userId);
+                userRepository.save(robot.get());
             } else {
                 userTmp.get().setGamesPlayedVsUser(userTmp.get().getGamesPlayedVsUser() + 1);
                 if(game.getWinner().equals(userTmp.get().getId()))  userTmp.get().setGamesWonVsUser(userTmp.get().getGamesWonVsUser() + 1);
@@ -345,8 +353,10 @@ public class BattleshipService {
      * @return leaderboard DTO
      */
     public LeaderboardDTO getLeaderboard(String opponent) {
-        return "robot".equals(opponent) ? new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsAiDesc()) :
+        LeaderboardDTO tmp =  "robot".equals(opponent) ? new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsAiDesc()) :
                 new LeaderboardDTO(userRepository.findAllByOrderByGamesWonVsUserDesc());
+        tmp.getLeaderboard().removeIf(user -> user.getId().equals("robot"));
+        return tmp;
     }
 
 }
