@@ -29,7 +29,7 @@ services:
       SPRING_DATASOURCE_URL: "jdbc:mysql://database:3306/battleship?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=true"
       MYSQL_HOST: database
     ports:
-      - "8080:8080"
+      - "80:8080"
     networks:
       - mynetwork
     depends_on:

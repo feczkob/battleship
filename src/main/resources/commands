@@ -1,0 +1,10 @@
+dockerfile: in battleship folder
+docker build -f src/main/resources/docker/Dockerfile -t feczkob/battleship:battleship-1.0 ./
+docker build -f src/main/resources/docker/Dockerfile -t battleship:latest ./
+push: https://jsta.github.io/r-docker-tutorial/04-Dockerhub.html
+docker tag <hash> feczkob/battleship:latest
+docker push feczkob/battleship
+
+MySQL:
+docker exec -it database mysql -uroot -ppassword
+docker exec -it database bash
