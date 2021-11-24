@@ -23,7 +23,7 @@ services:
       - mynetwork
 
   spring-battleship:
-    image: feczkob/battleship:battleship-1.0
+    image: feczkob/battleship:latest
     container_name: spring-battleship
     environment:
       SPRING_DATASOURCE_URL: "jdbc:mysql://database:3306/battleship?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=true"

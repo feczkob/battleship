@@ -10,5 +10,5 @@ CMD ["java", "-jar", "app.jar", "-Djava.net.preferIPv4Stack=true"]
 
 # in battleship folder
 # docker build -f src/main/resources/docker/Dockerfile -t feczkob/battleship:battleship-1.0 ./
-# docker build -f src/main/resources/docker/Dockerfile -t battleship:1.0 ./
+# docker build -f src/main/resources/docker/Dockerfile -t battleship:latest ./
 # push: https://jsta.github.io/r-docker-tutorial/04-Dockerhub.html
