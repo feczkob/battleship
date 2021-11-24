@@ -28,13 +28,18 @@ They can ask for new positions via a call to the corresponding API endpoint.
 
 ## Commands related to the app
 To run the app:
-  1. ```docker-compose up``` in the ```\battleship\src\main\resources\docker``` folder.
+  1. Start the MySQL docker container from the IDE or from [CLI](https://phoenixnap.com/kb/mysql-docker-container).
   2. ```mvn spring-boot:run``` in the ```battleship``` folder.
 
 To enter the MySQL container:  ```docker exec -it database mysql -uroot -ppassword``` in the ```battleship``` folder. <br />
 ```mysql> use battleship;``` <br />
 ```mysql> select * from room;``` or ```mysql> select * from user;``` <br />
 For other possible commands click [here](http://g2pc1.bu.edu/~qzpeng/manual/MySQL%20Commands.htm). <br />
+
+To run the app in docker container:
+  1. Create image: ```docker build -f src/main/resources/docker/Dockerfile -t <image_name>:<tag> ./``` in the ```battleship``` folder after a ```mvn clean install```.
+  2. Edit the ```docker-compose.yml``` file, enter the image name and tag in the 25th line.
+  3. ```docker-compose up``` in the ```\battleship\src\main\resources\docker``` folder.
 
 ## Useful links
 [Battleship](https://en.wikipedia.org/wiki/Battleship_(game)) <br/>
