@@ -333,7 +333,7 @@ public class BattleshipService {
                 robot.get().setGamesPlayedVsUser(robot.get().getGamesPlayedVsUser() + 1);
                 if(game.getWinner().equals(userId)) {
                     userTmp.get().setGamesWonVsAi(userTmp.get().getGamesWonVsAi() + 1);
-                } else robot.get().setGamesWonVsUser(robot.get().getGamesPlayedVsUser() + 1);
+                } else robot.get().setGamesWonVsUser(robot.get().getGamesWonVsUser() + 1);
                 robots.remove(userId);
                 userRepository.save(robot.get());
             } else {
