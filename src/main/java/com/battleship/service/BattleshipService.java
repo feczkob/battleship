@@ -156,7 +156,18 @@ public class BattleshipService {
             if (!game.getOtherPlayer(userId).equals("robot") && threads.get(game.getOtherPlayer(userId)) != null)
                 threads.get(game.getOtherPlayer(userId)).interrupt();
             threads.remove(game.getOtherPlayer(userId));
-            if (game.getOtherPlayer(userId).equals("robot")) robots.remove(userId);
+            if (game.getOtherPlayer(userId).equals("robot")) {
+                Optional<User> user = userRepository.findById(userId);
+                if(user.isEmpty())  throw new RuntimeException("no.such.user");
+                user.get().setGamesPlayedVsAi(user.get().getGamesPlayedVsAi() + 1);
+                userRepository.save(user.get());
+                Optional<User> robot = userRepository.findById("robot");
+                if(robot.isEmpty())  throw new RuntimeException("no.such.user");
+                robot.get().setGamesPlayedVsUser(robot.get().getGamesPlayedVsUser() + 1);
+                robot.get().setGamesWonVsUser(robot.get().getGamesWonVsUser() + 1);
+                userRepository.save(robot.get());
+                robots.remove(userId);
+            }
             game.setLeft(userId);
         }
     }
