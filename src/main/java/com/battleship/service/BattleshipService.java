@@ -167,6 +167,7 @@ public class BattleshipService {
                 robot.get().setGamesWonVsUser(robot.get().getGamesWonVsUser() + 1);
                 userRepository.save(robot.get());
                 robots.remove(userId);
+                games.remove(userId);
             }
             game.setLeft(userId);
         }
