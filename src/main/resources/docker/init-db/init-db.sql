@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     );
 
 CREATE TABLE IF NOT EXISTS `room` (
-    `id` int NOT NULL,
+    `id` int NOT NULL AUTO_INCREMENT,
     `user_id` varchar(100) NOT NULL,
     PRIMARY KEY  (`id`)
     );
