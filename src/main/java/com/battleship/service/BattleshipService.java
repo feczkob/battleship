@@ -225,6 +225,7 @@ public class BattleshipService {
      * @return true
      */
     public ShootResponseDTO ready(String userId) {
+        if(games.get(userId) == null)   return null;
         Game game = games.get(userId);
         String opponent = game.getOtherPlayer(userId);
         ShootResponseDTO shootResponseDTO = new ShootResponseDTO();
