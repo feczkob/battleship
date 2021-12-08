@@ -16,7 +16,7 @@ When the game starts the player is given an initial state of their ships:
 They can ask for new positions via a call to the corresponding API endpoint.
 
 ## Features
-1. Create new user if not exist
+1. Create new user if it does not exist
 2. Find user by Id
 3. Get all users
 4. Change username
@@ -24,7 +24,7 @@ They can ask for new positions via a call to the corresponding API endpoint.
 6. Get all rooms
 7. Start a single player game vs. a naive robot
 8. Start a multiplayer game vs. a real user
-9. Shoot at a specific field: multiple shots at different fields from one player are disabled
+9. Shoot at a specific field
 10. Get leaderboard
 
 ## Commands related to the app
